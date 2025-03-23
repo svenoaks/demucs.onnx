@@ -7,3 +7,4 @@ build*/
 *.pyc
 *.csv
 onnx-models/
+demucs-onnx/
