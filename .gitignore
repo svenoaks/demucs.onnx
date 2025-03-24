@@ -8,3 +8,5 @@ build*/
 *.csv
 onnx-models/
 demucs-onnx/
+.DS_Store
+**/.DS_Store
