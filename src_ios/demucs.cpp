@@ -61,7 +61,7 @@ static Eigen::MatrixXf load_audio_file(std::string filename)
         std::cerr << "[ERROR] demucs.cpp only supports the following sample "
                      "rate (Hz): "
                   << demucsonnx::SUPPORTED_SAMPLE_RATE << std::endl;
-        exit(1);
+        throw std::runtime_error("Unsupported sample rate");
     }
 
     std::cout << "Input samples: "
@@ -73,7 +73,7 @@ static Eigen::MatrixXf load_audio_file(std::string filename)
     {
         std::cerr << "[ERROR] demucs.cpp only supports mono and stereo audio"
                   << std::endl;
-        exit(1);
+        throw std::runtime_error("Unsupported channel count");
     }
 
     // number of samples per channel
@@ -133,23 +133,21 @@ static void write_audio_file(const Eigen::MatrixXf &waveform,
     std::cout << "Encoder Status: " << encoderStatus << std::endl;
 }
 
-int main(int argc, const char **argv)
+// Error codes
+enum DemucsError {
+    SUCCESS = 0,
+    INVALID_ARGUMENTS = 1,
+    DIRECTORY_ERROR = 2,
+    AUDIO_LOAD_ERROR = 3,
+    MODEL_LOAD_ERROR = 4,
+    INFERENCE_ERROR = 5,
+    WRITE_ERROR = 6,
+    UNSUPPORTED_TARGET = 7
+};
+
+int run_demucs(std::string model_file_path, std::string wav_file_path, std::string out_dir)
 {
-    if (argc != 4)
-    {
-        std::cerr << "Usage: " << argv[0] << " <model file> <wav file> <out dir>"
-                  << std::endl;
-        exit(1);
-    }
-
     std::cout << "demucs.onnx Main driver program" << std::endl;
-    std::string model_file = argv[1];
-
-    // load audio passed as argument
-    std::string wav_file = argv[2];
-
-    // output dir passed as argument
-    std::string out_dir = argv[3];
 
     // Check if the output directory exists, and create it if not
     std::filesystem::path output_dir_path(out_dir);
@@ -161,19 +159,25 @@ int main(int argc, const char **argv)
         {
             std::cerr << "Error: Unable to create directory: " << out_dir
                       << std::endl;
-            return 1;
+            return DIRECTORY_ERROR;
         }
     }
     else if (!std::filesystem::is_directory(output_dir_path))
     {
         std::cerr << "Error: " << out_dir << " exists but is not a directory!"
                   << std::endl;
-        return 1;
+        return DIRECTORY_ERROR;
     }
 
-    Eigen::MatrixXf audio = load_audio_file(wav_file);
+    Eigen::MatrixXf audio;
+    try {
+        audio = load_audio_file(wav_file_path);
+    } catch (const std::exception& e) {
+        std::cerr << "Error loading audio file: " << e.what() << std::endl;
+        return AUDIO_LOAD_ERROR;
+    }
+    
     Eigen::Tensor3dXf out_targets;
-
     std::cout << "Running Demucs.onnx inference for: " << wav_file << std::endl;
 
         // set output precision to 3 decimal places
@@ -198,16 +202,25 @@ int main(int argc, const char **argv)
     // General optimizations
     session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
 
-    struct demucsonnx::demucs_model model = load_model(
-        model_file,
-        session_options
-    );
-
-    // create 4 audio matrix same size, to hold output
-    Eigen::Tensor3dXf audio_targets =
-        demucsonnx::demucs_inference(model, audio, progressCallback);
-
-    out_targets = audio_targets;
+    struct demucsonnx::demucs_model model;
+    try {
+        model = load_model(
+            model_file_path,
+            session_options
+        );
+    } catch (const std::exception& e) {
+        std::cerr << "Error loading model: " << e.what() << std::endl;
+        return MODEL_LOAD_ERROR;
+    }
+    // create audio matrix same size, to hold output
+    Eigen::Tensor3dXf audio_targets;
+    try {
+        audio_targets = demucsonnx::demucs_inference(model, audio, progressCallback);
+        out_targets = audio_targets;
+    } catch (const std::exception& e) {
+        std::cerr << "Error during inference: " << e.what() << std::endl;
+        return INFERENCE_ERROR;
+    }
 
     int nb_out_sources = model.nb_sources;
 
@@ -247,13 +260,13 @@ int main(int argc, const char **argv)
             break;
         case 5:
             target_name = "piano";
+            target_name = "piano";
             break;
         default:
             std::cerr << "Error: target " << target << " not supported"
                       << std::endl;
-            exit(1);
+            return UNSUPPORTED_TARGET;
         }
-
         // insert target_name into the path after the digit
         // e.g. target_name_0_drums.wav
         p_target.replace_filename("target_" + std::to_string(target) + "_" +
@@ -272,9 +285,32 @@ int main(int argc, const char **argv)
                     out_targets(target, channel, sample);
             }
         }
+        }
 
-        write_audio_file(target_waveform, p_target);
+        try {
+            write_audio_file(target_waveform, p_target);
+        } catch (const std::exception& e) {
+            std::cerr << "Error writing audio file: " << e.what() << std::endl;
+            return WRITE_ERROR;
+        }
     }
 
-    return 0;
+    return SUCCESS;
+}
+
+// Main function that serves as an entry point when running as executable
+int main(int argc, const char **argv)
+{
+    if (argc != 4)
+    {
+        std::cerr << "Usage: " << argv[0] << " <model file> <wav file> <out dir>"
+                  << std::endl;
+        return 1;
+    }
+
+    std::string model_file = argv[1];
+    std::string wav_file = argv[2];
+    std::string out_dir = argv[3];
+
+    return run_demucs(model_file, wav_file, out_dir);
 }
