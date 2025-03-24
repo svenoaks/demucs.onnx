@@ -102,7 +102,7 @@ enum DemucsError {
     UNSUPPORTED_TARGET = 7
 };
 
-int run_demucs(std::string model_file_path, std::string wav_file_path, std::string out_dir)
+int run_demucs_onnx(std::string model_file_path, std::string wav_file_path, std::string out_dir)
 {
     std::cout << "demucs.onnx Main driver program" << std::endl;
     std::filesystem::path output_dir_path(out_dir);
