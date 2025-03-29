@@ -3,6 +3,7 @@
 
 #include "dsp.hpp"
 #include "tensor.hpp"
+#include "wav_writer.hpp"
 #include <Eigen/Dense>
 #include <array>
 #include <functional>
@@ -10,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <onnxruntime/core/session/onnxruntime_cxx_api.h>
+
 
 namespace demucsonnx
 {
@@ -124,6 +126,12 @@ const float TRANSITION_POWER = 1.0;      // transition between segments
 Eigen::Tensor3dXf demucs_inference(struct demucs_model &model,
                                    const Eigen::MatrixXf &audio,
                                    ProgressCallback cb);
+
+void model_inference_and_write_incremental(
+        struct demucsonnx::demucs_model &model,
+        const Eigen::MatrixXf &audio, // Pass the original audio
+        std::vector<std::unique_ptr<StreamingWavWriter>>& writers, // Pass writers
+        demucsonnx::ProgressCallback cb);
 
 void model_inference(struct demucs_model &model,
                      struct demucsonnx::demucs_segment_buffers &buffers,

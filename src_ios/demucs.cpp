@@ -1,21 +1,28 @@
 #include "demucs.hpp"
+#include "wav_writer.hpp"
+
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <libnyquist/Common.h>
 #include <libnyquist/Decoders.h>
 #include <libnyquist/Encoders.h>
 #include <map>
+#include <memory>
 #include <numeric>
 #include <ranges>
 #include <sstream>
 #include <stddef.h>
+#include <string>
 #include <tuple>
 #include <vector>
+
+#include <Eigen/Dense>
 
 using namespace nqr;
 
@@ -88,80 +95,104 @@ extern "C" int process_demucs_onnx(int argc, const char **argv) {
             std::cerr << "Usage: " << argv[0] << " <model file> <wav file> <out dir>" << std::endl;
             return 1;
         }
-        std::cout << "demucs.onnx Main driver program" << std::endl;
+        std::cout << "demucs.onnx Incremental Main driver program" << std::endl;
         std::string model_file = argv[1];
         std::string wav_file = argv[2];
         std::string out_dir = argv[3];
         std::filesystem::path output_dir_path(out_dir);
+
+        // --- Directory Handling (same as before) ---
         if (!std::filesystem::exists(output_dir_path)) {
             std::cerr << "Directory does not exist: " << out_dir << ". Creating it." << std::endl;
             if (!std::filesystem::create_directories(output_dir_path)) {
-                std::cerr << "Error: Unable to create directory: " << out_dir << std::endl;
-                return 1;
+                std::cerr << "Error: Unable to create directory: " << out_dir << std::endl; return 1;
             }
         } else if (!std::filesystem::is_directory(output_dir_path)) {
-            std::cerr << "Error: " << out_dir << " exists but is not a directory!" << std::endl;
-            return 1;
+            std::cerr << "Error: " << out_dir << " exists but is not a directory!" << std::endl; return 1;
         }
+
+        // --- Load Audio (same as before) ---
         Eigen::MatrixXf audio = load_audio_file(wav_file);
-        Eigen::Tensor3dXf out_targets;
-        std::cout << "Running Demucs.onnx inference for: " << wav_file << std::endl;
-        std::cout << std::fixed << std::setprecision(3);
-        demucsonnx::ProgressCallback progressCallback = [](float progress, const std::string &log_message) {
-            std::cout << "(" << std::setw(3) << std::setfill(' ') << progress * 100.0f << "%) " << log_message << std::endl;
-        };
+
+        // --- Load Model (same as before) ---
         Ort::SessionOptions session_options;
         session_options.DisableMemPattern();
-        session_options.DisableCpuMemArena(); 
+        session_options.DisableCpuMemArena();
         session_options.SetExecutionMode(ExecutionMode::ORT_PARALLEL);
-        session_options.SetIntraOpNumThreads(4);
-        session_options.SetInterOpNumThreads(4);
+        session_options.SetIntraOpNumThreads(4); // Adjust threads as needed
+        session_options.SetInterOpNumThreads(4); // Adjust threads as needed
         session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
         demucsonnx::demucs_model model = load_model(model_file, session_options);
-        Eigen::Tensor3dXf audio_targets = demucsonnx::demucs_inference(model, audio, progressCallback);
-        out_targets = audio_targets;
+
+        // --- Prepare Streaming Writers ---
         int nb_out_sources = model.nb_sources;
+        std::vector<std::unique_ptr<StreamingWavWriter>> writers;
+        std::vector<std::string> target_names; // Store names for logging
+
         for (int target = 0; target < nb_out_sources; ++target) {
-            std::filesystem::path p = out_dir;
-            std::filesystem::create_directories(p);
-            auto p_target = p / "target_0.wav";
             std::string target_name;
-            switch (target) {
-            case 0:
-                target_name = "drums";
-                break;
-            case 1:
-                target_name = "bass";
-                break;
-            case 2:
-                target_name = "other";
-                break;
-            case 3:
-                target_name = "vocals";
-                break;
-            case 4:
-                target_name = "guitar";
-                break;
-            case 5:
-                target_name = "piano";
-                break;
-            default:
-                std::cerr << "Error: target " << target << " not supported" << std::endl;
-                return 1;
+             switch (target) {
+                 case 0: target_name = "drums"; break;
+                 case 1: target_name = "bass"; break;
+                 case 2: target_name = "other"; break;
+                 case 3: target_name = "vocals"; break;
+                 case 4: target_name = "guitar"; break; // Assuming htdemucs
+                 case 5: target_name = "piano"; break;  // Assuming htdemucs
+                 default:
+                     std::cerr << "Warning: Target index " << target << " not recognized, using generic name." << std::endl;
+                     target_name = "source_" + std::to_string(target);
+             }
+             target_names.push_back(target_name);
+
+            std::filesystem::path p_target = output_dir_path / (target_name + ".wav");
+            std::cout << "Preparing output file: " << p_target.string() << std::endl;
+
+            auto writer = std::make_unique<StreamingWavWriter>();
+            if (!writer->open(p_target.string(), demucsonnx::SUPPORTED_SAMPLE_RATE, 2)) { // Assuming stereo output
+                std::cerr << "Error: Failed to open writer for " << target_name << std::endl;
+                return 1; // Critical error
             }
-            p_target.replace_filename("target_" + std::to_string(target) + "_" + target_name + ".wav");
-            std::cout << "Writing wav file " << p_target << std::endl;
-            Eigen::MatrixXf target_waveform(2, audio.cols());
-            for (int channel = 0; channel < 2; ++channel) {
-                for (int sample = 0; sample < audio.cols(); ++sample) {
-                    target_waveform(channel, sample) = out_targets(target, channel, sample);
-                }
-            }
-            write_audio_file(target_waveform, p_target);
+            writers.push_back(std::move(writer));
         }
+
+        // --- Run Incremental Inference and Writing ---
+        std::cout << "Running Incremental Demucs.onnx inference for: " << wav_file << std::endl;
+        std::cout << std::fixed << std::setprecision(1); // Adjust precision for progress
+        demucsonnx::ProgressCallback progressCallback = [&](float progress, const std::string &log_message) {
+            // More detailed progress possible here if the incremental function provides it
+             std::cout << "[" << std::setw(5) << progress * 100.0f << "%] " << log_message << std::endl;
+        };
+
+        // Call the new incremental function from model_apply.cpp
+        demucsonnx::model_inference_and_write_incremental(model, audio, writers, progressCallback);
+
+
+        // --- Finalize Writers (updates headers, closes files) ---
+        std::cout << "Finalizing output files..." << std::endl;
+        bool all_finalized = true;
+        for (size_t i = 0; i < writers.size(); ++i) {
+            if (!writers[i]->finalize()) {
+                std::cerr << "Error: Failed to finalize writer for " << target_names[i] << std::endl;
+                all_finalized = false;
+                // Continue finalizing others
+            }
+        }
+
+        if (!all_finalized) {
+            std::cerr << "Warning: One or more output files may be corrupted." << std::endl;
+            // Decide if this should be a fatal error (return 1)
+        }
+
+        std::cout << "Incremental processing complete." << std::endl;
         return 0;
+
     } catch (const std::exception &e) {
-        std::cerr << e.what() << std::endl;
+        std::cerr << "Exception caught: " << e.what() << std::endl;
+        return 1;
+    } catch (...) {
+        std::cerr << "Unknown exception caught." << std::endl;
         return 1;
     }
 }
+
+
