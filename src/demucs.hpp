@@ -3,7 +3,6 @@
 
 #include "dsp.hpp"
 #include "tensor.hpp"
-#include "wav_writer.hpp"
 #include <Eigen/Dense>
 #include <array>
 #include <functional>
@@ -20,6 +19,7 @@ extern Ort::RunOptions run_options;
 
 // Define a type for your callback function
 using ProgressCallback = std::function<void(float, const std::string &)>;
+using WriteChunkCallback = std::function<void(const Eigen::Tensor<float, 3>& chunk_data, int num_valid_samples)>;
 
 const int FREQ_BRANCH_LEN = 336;
 const int TIME_BRANCH_LEN_IN = 343980;
@@ -127,11 +127,12 @@ Eigen::Tensor3dXf demucs_inference(struct demucs_model &model,
                                    const Eigen::MatrixXf &audio,
                                    ProgressCallback cb);
 
-void model_inference_and_write_incremental(
+void demucs_inference_incremental(
         struct demucsonnx::demucs_model &model,
-        const Eigen::MatrixXf &audio, // Pass the original audio
-        std::vector<std::unique_ptr<StreamingWavWriter>>& writers, // Pass writers
-        demucsonnx::ProgressCallback cb);
+        const Eigen::MatrixXf &audio,
+        demucsonnx::ProgressCallback cb,
+        const demucsonnx::WriteChunkCallback& write_callback // Expects the callback
+        );
 
 void model_inference(struct demucs_model &model,
                      struct demucsonnx::demucs_segment_buffers &buffers,
