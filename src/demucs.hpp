@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <onnxruntime/core/session/onnxruntime_cxx_api.h>
+#include "demucs_result_codes.h"
 
 
 namespace demucsonnx
@@ -127,12 +128,12 @@ Eigen::Tensor3dXf demucs_inference(struct demucs_model &model,
                                    const Eigen::MatrixXf &audio,
                                    ProgressCallback cb);
 
-void demucs_inference_incremental(
-        struct demucsonnx::demucs_model &model,
-        const Eigen::MatrixXf &audio,
-        demucsonnx::ProgressCallback cb,
-        const demucsonnx::WriteChunkCallback& write_callback // Expects the callback
-        );
+DemucsResultCode demucs_inference_incremental(struct demucsonnx::demucs_model &model,
+                                              const Eigen::MatrixXf &audio,
+                                              demucsonnx::ProgressCallback cb,
+                                              const WriteChunkCallback& write_callback,
+                                              const std::atomic<bool>* cancel_flag
+                                              );
 
 void model_inference(struct demucs_model &model,
                      struct demucsonnx::demucs_segment_buffers &buffers,
