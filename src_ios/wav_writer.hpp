@@ -2,50 +2,54 @@
 #define WAV_WRITER_HPP
 
 #include <string>
-#include <fstream>
 #include <vector>
-#include <cstdint> // For uint16_t, uint32_t
+#include <cstdint> // For uint16_t, uint32_t, uint64_t
+
+// Include dr_wav.h directly to get the type definitions consistently.
+// Ensure DR_WAV_IMPLEMENTATION is NOT defined here.
+#include "dr_wav.h"
+
+// No need for forward declaration 'struct drwav;' anymore
 
 class StreamingWavWriter {
 public:
     StreamingWavWriter();
     ~StreamingWavWriter(); // Ensure file is finalized even if not explicitly called
 
-    // Opens the file, writes the header with placeholders
+    // Opens the file using dr_wav
+    // Supports only 32-bit float format internally now.
     bool open(const std::string& filename, uint32_t sample_rate, uint16_t num_channels);
 
-    // Appends interleaved audio data
-    bool append_samples(const float* interleaved_data, size_t num_samples);
+    // Appends interleaved audio data (float) using dr_wav
+    // num_total_samples is the TOTAL number of float samples (frames * channels)
+    bool append_samples(const float* interleaved_data, size_t num_total_samples);
 
-    // Appends separate channel data
+    // Appends separate channel data (float) (will interleave internally before calling dr_wav)
     bool append_samples(const float* chan0_data, const float* chan1_data, size_t num_samples_per_channel);
 
-    // Updates the header with correct sizes and closes the file
+    // Finalizes the WAV file using dr_wav
     bool finalize();
 
-    // Returns the total number of samples (per channel) written so far
+    // Returns the total number of frames (samples per channel) written so far
     size_t get_total_samples_written() const;
 
 
 private:
-    void write_header();
-    void write_uint16(uint16_t value);
-    void write_uint32(uint32_t value);
-    template <typename T>
-    void write_bytes(const T* data, size_t count);
+    // dr_wav handle - allocated on the heap
+    // Now uses the type 'drwav' directly as defined by the included header.
+    drwav* wav_handle;
 
-    std::ofstream file_stream;
+    // Keep track of format for internal logic and get_total_samples_written
     uint32_t sample_rate;
     uint16_t num_channels;
-    uint16_t bytes_per_sample; // e.g., 4 for float
-    uint16_t block_align;      // num_channels * bytes_per_sample
-    uint32_t data_chunk_size;  // Total size of PCM data in bytes
+    uint64_t total_frames_written_counter; // Track frames written during streaming
+
+    // State
     bool is_open;
     std::string current_filename;
 
-    // Positions in the file where sizes need to be updated
-    std::streampos riff_chunk_size_pos;
-    std::streampos data_chunk_size_pos;
+    // Temporary buffer for interleaving non-interleaved input
+    std::vector<float> interleave_buffer;
 };
 
 #endif // WAV_WRITER_HPP
