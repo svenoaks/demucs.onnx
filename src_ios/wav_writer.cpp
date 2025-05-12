@@ -1,190 +1,195 @@
 #include "wav_writer.hpp"
 #include <iostream>
-#include <vector> // Include vector for temporary buffer if needed
+#include <vector>
+#include <stdexcept> // For std::runtime_error if needed for buffer allocation
+#include <cstring>   // For memset
 
-// Helper function for writing little-endian values
-inline void write_le_uint16(std::ofstream& stream, uint16_t value) {
-    stream.put(static_cast<char>(value & 0xFF));
-    stream.put(static_cast<char>((value >> 8) & 0xFF));
-}
-
-inline void write_le_uint32(std::ofstream& stream, uint32_t value) {
-    stream.put(static_cast<char>(value & 0xFF));
-    stream.put(static_cast<char>((value >> 8) & 0xFF));
-    stream.put(static_cast<char>((value >> 16) & 0xFF));
-    stream.put(static_cast<char>((value >> 24) & 0xFF));
-}
+#define DR_WAV_IMPLEMENTATION
+#include "dr_wav.h"
 
 
 StreamingWavWriter::StreamingWavWriter()
-    : sample_rate(0), num_channels(0), bytes_per_sample(0),
-      block_align(0), data_chunk_size(0), is_open(false),
-      riff_chunk_size_pos(0), data_chunk_size_pos(0) {}
+    : wav_handle(nullptr), sample_rate(0), num_channels(0),
+      total_frames_written_counter(0), is_open(false)
+{
+    // Allocate drwav struct on the heap
+    wav_handle = new drwav();
+    if (wav_handle) {
+        memset(wav_handle, 0, sizeof(drwav)); // Zero initialize
+    } else {
+        // This is unlikely but handle allocation failure
+        std::cerr << "WAV Writer Error: Failed to allocate drwav handle." << std::endl;
+        // The object is in a bad state, but destructor will handle null wav_handle
+    }
+}
 
 StreamingWavWriter::~StreamingWavWriter() {
     if (is_open) {
         finalize(); // Attempt to finalize if not already done
     }
+    // Clean up the allocated drwav struct
+    delete wav_handle;
+    wav_handle = nullptr;
 }
 
 bool StreamingWavWriter::open(const std::string& filename, uint32_t sr, uint16_t nc) {
+    if (!wav_handle) {
+        std::cerr << "WAV Writer Error: drwav handle is null. Cannot open." << std::endl;
+        return false;
+    }
     if (is_open) {
         std::cerr << "WAV Writer Error: File already open: " << current_filename << std::endl;
         return false;
     }
+     // dr_wav supports more channels, but let's keep the original check for now
+     // if the rest of the pipeline depends on it. Remove if unnecessary.
     if (nc != 1 && nc != 2) {
-         std::cerr << "WAV Writer Error: Only 1 or 2 channels supported. Requested: " << nc << std::endl;
-         return false;
+         std::cerr << "WAV Writer Warning: dr_wav supports more, but keeping original 1/2 channel check. Requested: " << nc << std::endl;
+         // return false; // Or allow more channels if the pipeline supports it
+    }
+    if (sr == 0) {
+        std::cerr << "WAV Writer Error: Sample rate cannot be zero." << std::endl;
+        return false;
     }
 
     sample_rate = sr;
     num_channels = nc;
-    // Using 32-bit float PCM
-    bytes_per_sample = sizeof(float);
-    block_align = num_channels * bytes_per_sample;
-    data_chunk_size = 0; // Start with zero data
-
-    file_stream.open(filename, std::ios::binary | std::ios::trunc);
-    if (!file_stream) {
-        std::cerr << "WAV Writer Error: Failed to open file for writing: " << filename << std::endl;
-        return false;
-    }
-
     current_filename = filename;
-    write_header(); // Write header with placeholders
-    is_open = file_stream.good();
+    total_frames_written_counter = 0; // Reset counter
 
-    if (!is_open) {
-         std::cerr << "WAV Writer Error: Stream state bad after writing header for: " << filename << std::endl;
-         file_stream.close(); // Ensure closed on error
+    drwav_data_format format;
+    format.container = drwav_container_riff; // Standard WAV
+    format.format = DR_WAVE_FORMAT_IEEE_FLOAT; // Using 32-bit float
+    format.channels = nc;
+    format.sampleRate = sr;
+    format.bitsPerSample = 32; // sizeof(float) * 8
+
+    // Use drwav_init_file_write (non-sequential, requires seeking for finalize)
+    // Pass NULL for allocation callbacks to use defaults (malloc/free)
+    if (!drwav_init_file_write(wav_handle, filename.c_str(), &format, NULL)) {
+        std::cerr << "WAV Writer Error: drwav_init_file_write failed for: " << filename << std::endl;
+        is_open = false;
+        // wav_handle might be in an indeterminate state, but drwav_uninit handles this
+    } else {
+        is_open = true;
+        std::cout << "WAV Writer Info: Opened file using dr_wav: " << filename << std::endl;
     }
 
     return is_open;
 }
 
-void StreamingWavWriter::write_header() {
-    // RIFF Chunk Descriptor
-    file_stream.write("RIFF", 4);
-    riff_chunk_size_pos = file_stream.tellp();
-    write_le_uint32(file_stream, 0); // Placeholder for ChunkSize (file size - 8)
-    file_stream.write("WAVE", 4);
-
-    // "fmt " sub-chunk
-    file_stream.write("fmt ", 4);
-    write_le_uint32(file_stream, 16); // Subchunk1Size for PCM (16 bytes)
-    // AudioFormat (3 for IEEE float)
-    uint16_t audio_format = 3;
-    write_le_uint16(file_stream, audio_format);
-    write_le_uint16(file_stream, num_channels);
-    write_le_uint32(file_stream, sample_rate);
-    // ByteRate == SampleRate * NumChannels * BytesPerSample
-    write_le_uint32(file_stream, sample_rate * block_align);
-    write_le_uint16(file_stream, block_align);
-    // BitsPerSample == BytesPerSample * 8
-    write_le_uint16(file_stream, bytes_per_sample * 8);
-
-    // "data" sub-chunk
-    file_stream.write("data", 4);
-    data_chunk_size_pos = file_stream.tellp();
-    write_le_uint32(file_stream, 0); // Placeholder for Subchunk2Size (data size)
-}
-
 
 bool StreamingWavWriter::append_samples(const float* interleaved_data, size_t num_total_samples) {
-     if (!is_open) return false;
+     if (!is_open || !wav_handle) {
+         std::cerr << "WAV Writer Error: Cannot append samples, writer not open." << std::endl;
+         return false;
+     }
      if (num_total_samples == 0) return true; // Nothing to write
 
-     size_t bytes_to_write = num_total_samples * bytes_per_sample;
-     file_stream.write(reinterpret_cast<const char*>(interleaved_data), bytes_to_write);
-
-     if (!file_stream) {
-          std::cerr << "WAV Writer Error: Failed to write sample data to: " << current_filename << std::endl;
-          is_open = false; // Mark as failed
+     if (num_channels == 0) {
+         std::cerr << "WAV Writer Error: Cannot append samples, channel count is zero." << std::endl;
+         return false;
+     }
+     if (num_total_samples % num_channels != 0) {
+          std::cerr << "WAV Writer Error: Total number of samples (" << num_total_samples
+                    << ") is not divisible by channel count (" << num_channels << ")." << std::endl;
           return false;
      }
 
-     data_chunk_size += static_cast<uint32_t>(bytes_to_write);
+     // dr_wav takes the number of PCM frames (samples per channel)
+     drwav_uint64 num_frames_to_write = num_total_samples / num_channels;
+
+     if (num_frames_to_write == 0) return true; // Possible if num_total_samples < num_channels
+
+     drwav_uint64 frames_actually_written = drwav_write_pcm_frames(wav_handle, num_frames_to_write, interleaved_data);
+
+     if (frames_actually_written != num_frames_to_write) {
+          std::cerr << "WAV Writer Error: drwav_write_pcm_frames failed or wrote partial data for: "
+                    << current_filename << ". Expected " << num_frames_to_write << ", wrote " << frames_actually_written << std::endl;
+          // Consider the stream corrupted? Or just log? Let's log and continue for now.
+          // is_open = false; // Optionally mark as failed
+          total_frames_written_counter += frames_actually_written; // Still update with what was written
+          return false; // Indicate error
+     }
+
+     total_frames_written_counter += frames_actually_written;
      return true;
 }
 
 
 bool StreamingWavWriter::append_samples(const float* chan0_data, const float* chan1_data, size_t num_samples_per_channel) {
-    if (!is_open) return false;
+    if (!is_open || !wav_handle) {
+        std::cerr << "WAV Writer Error: Cannot append samples, writer not open." << std::endl;
+        return false;
+    }
     if (num_samples_per_channel == 0) return true;
     if (num_channels != 2) {
-         std::cerr << "WAV Writer Error: append_samples(chan0, chan1, ...) called on non-stereo writer." << std::endl;
+         std::cerr << "WAV Writer Error: append_samples(chan0, chan1, ...) called on non-stereo writer (channels=" << num_channels << ")." << std::endl;
          return false;
     }
 
-    // Interleave data into a temporary buffer before writing
-    // This uses temporary RAM but avoids many small writes. Adjust buffer size if needed.
-    const size_t buffer_chunk_size = 4096; // Process N samples at a time
-    std::vector<float> interleaved_buffer(buffer_chunk_size * num_channels);
-
-    size_t samples_written = 0;
-    while(samples_written < num_samples_per_channel) {
-        size_t samples_to_process = std::min(buffer_chunk_size, num_samples_per_channel - samples_written);
-        for (size_t i = 0; i < samples_to_process; ++i) {
-            interleaved_buffer[i * 2]     = chan0_data[samples_written + i];
-            interleaved_buffer[i * 2 + 1] = chan1_data[samples_written + i];
+    // Interleave data into the temporary buffer before writing
+    size_t required_buffer_size = num_samples_per_channel * num_channels; // Total float samples
+    try {
+        if (interleave_buffer.size() < required_buffer_size) {
+            interleave_buffer.resize(required_buffer_size);
         }
-
-        size_t bytes_to_write = samples_to_process * block_align;
-        file_stream.write(reinterpret_cast<const char*>(interleaved_buffer.data()), bytes_to_write);
-
-        if (!file_stream) {
-             std::cerr << "WAV Writer Error: Failed to write interleaved sample data to: " << current_filename << std::endl;
-             is_open = false; // Mark as failed
-             return false;
-        }
-
-        data_chunk_size += static_cast<uint32_t>(bytes_to_write);
-        samples_written += samples_to_process;
+    } catch (const std::bad_alloc& e) {
+        std::cerr << "WAV Writer Error: Failed to allocate interleave buffer: " << e.what() << std::endl;
+        return false;
+    } catch (...) {
+         std::cerr << "WAV Writer Error: Unknown error allocating interleave buffer." << std::endl;
+         return false;
     }
 
-    return true;
+
+    for (size_t i = 0; i < num_samples_per_channel; ++i) {
+        interleave_buffer[i * 2]     = chan0_data[i];
+        interleave_buffer[i * 2 + 1] = chan1_data[i];
+    }
+
+    // Now call the interleaved version using the buffer
+    // Note: drwav_write_pcm_frames takes frames, so pass num_samples_per_channel
+    drwav_uint64 frames_actually_written = drwav_write_pcm_frames(wav_handle, num_samples_per_channel, interleave_buffer.data());
+
+     if (frames_actually_written != num_samples_per_channel) {
+          std::cerr << "WAV Writer Error: drwav_write_pcm_frames failed or wrote partial data for: "
+                    << current_filename << ". Expected " << num_samples_per_channel << ", wrote " << frames_actually_written << std::endl;
+          total_frames_written_counter += frames_actually_written;
+          return false; // Indicate error
+     }
+
+     total_frames_written_counter += frames_actually_written;
+     return true;
 }
 
 
 bool StreamingWavWriter::finalize() {
     if (!is_open) {
-        // Allow finalize to be called multiple times, but only act once
-        // Or if it failed previously, don't try again.
-        return file_stream.is_open(); // Return true if it was successfully closed before
+        // Allow finalize to be called multiple times if already closed successfully.
+        // If it failed previously, is_open would be false.
+        return !is_open; // Return true if it's already closed (implies success or prior failure handled)
+    }
+    if (!wav_handle) {
+        std::cerr << "WAV Writer Error: Cannot finalize, drwav handle is null." << std::endl;
+        return false; // Should not happen if is_open is true, but check anyway
     }
 
-    // Get current position = end of data = total file size
-    std::streampos end_pos = file_stream.tellp();
+    drwav_result result = drwav_uninit(wav_handle);
+    is_open = false; // Mark as closed regardless of result
 
-    // Calculate final sizes
-    // RIFF Chunk Size = FileSize - 8 bytes (for "RIFF" and the size field itself)
-    uint32_t riff_chunk_size = static_cast<uint32_t>(end_pos) - 8;
-    // Data Chunk Size is already tracked in data_chunk_size
-
-    // Seek back and write the final sizes
-    file_stream.seekp(riff_chunk_size_pos);
-    if (!file_stream) { std::cerr << "WAV Writer Error: Seek failed (RIFF size) for " << current_filename << std::endl; return false; }
-    write_le_uint32(file_stream, riff_chunk_size);
-
-    file_stream.seekp(data_chunk_size_pos);
-    if (!file_stream) { std::cerr << "WAV Writer Error: Seek failed (data size) for " << current_filename << std::endl; return false; }
-    write_le_uint32(file_stream, data_chunk_size);
-
-    // Seek back to the end of the file before closing (optional but good practice)
-    file_stream.seekp(end_pos);
-    file_stream.close();
-
-    is_open = false; // Mark as closed
-    bool success = !file_stream.fail();
-    if(success) {
-        std::cout << "Finalized WAV file: " << current_filename << " (" << data_chunk_size << " data bytes)" << std::endl;
-    } else {
-        std::cerr << "WAV Writer Error: Stream failed during finalization for " << current_filename << std::endl;
+    if (result != DRWAV_SUCCESS) {
+        std::cerr << "WAV Writer Error: drwav_uninit failed for " << current_filename << " (Error code: " << result << ")" << std::endl;
+        // Reset internal state? drwav_uninit should clean up the handle mostly.
+        // We might want to zero out the handle again after deletion in the destructor.
+        return false;
     }
-    return success;
+
+    std::cout << "Finalized WAV file using dr_wav: " << current_filename << " (" << total_frames_written_counter << " frames)" << std::endl;
+    return true;
 }
 
 size_t StreamingWavWriter::get_total_samples_written() const {
-    if (block_align == 0) return 0;
-    return data_chunk_size / block_align;
+    // Return the number of frames (samples per channel) tracked internally
+    return static_cast<size_t>(total_frames_written_counter);
 }
