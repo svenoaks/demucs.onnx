@@ -17,52 +17,27 @@
 #include <cmath>      // For std::max, std::min, std::ceil, std::sqrt
 #include <random>     // For random shift generation
 #include <fstream>    // For ifstream used in load_model
+#include <limits>
+#include <new>
 
 // --- Project-Specific Includes ---
 #include "demucs.hpp"       // Core C++ declarations (demucs_model, callbacks, constants, load_model declaration)
 #include "demucs_result_codes.h" // Shared enum definition
 #include "wav_writer.hpp"   // For StreamingWavWriter class
-#include <libnyquist/Decoders.h> // For loading audio via libnyquist
-#include <libnyquist/Common.h>   // For nqr::AudioData
+#include "wav_reader.hpp"   // For StreamingWavReader class
 #include <onnxruntime/core/session/onnxruntime_cxx_api.h> // For ONNX Runtime
-#include <unsupported/Eigen/CXX11/Tensor> // For Eigen::Tensor (used by write_audio_chunk)
+#include <unsupported/Eigen/CXX11/Tensor> // For Eigen::Tensor
 
 // --- Include C Interface Header ---
 #include "demucs_interface.h"
 
-// --- Forward Declaration for the Core Inference Function ---
-// This function MUST be defined in a linked file (e.g., model_apply.cpp).
-
-DemucsResultCode demucsonnx::demucs_inference_incremental(
-                                                          struct demucsonnx::demucs_model &model,
-                                                          const Eigen::MatrixXf &audio,
-                                                          demucsonnx::ProgressCallback cb,
-                                                          const WriteChunkCallback& write_callback,
-                                                          const std::atomic<bool>* cancel_flag);
 
 
-// --- Audio loading ---
-static Eigen::MatrixXf load_audio_file_internal(const std::string& filename) {
-    std::shared_ptr<nqr::AudioData> fileData = std::make_shared<nqr::AudioData>();
-    nqr::NyquistIO loader;
-    if (!std::filesystem::exists(filename)) { throw std::runtime_error("[load_audio_internal] Input audio file does not exist: " + filename); }
-    try { loader.Load(fileData.get(), filename); }
-    catch (const std::exception& e) { throw std::runtime_error("[load_audio_internal] libnyquist load failed: " + std::string(e.what())); }
-    catch (...) { throw std::runtime_error("[load_audio_internal] libnyquist load failed with unknown exception."); } // Catch non-std exceptions
-    if (!fileData || fileData->samples.empty()) { std::cerr << "Warning [load_audio_internal]: Audio data empty: " << filename << std::endl; return Eigen::MatrixXf(2, 0); }
-    if (fileData->sampleRate != demucsonnx::SUPPORTED_SAMPLE_RATE) { throw std::runtime_error("[load_audio_internal] Unsupported sample rate..."); }
-    if (fileData->channelCount != 1 && fileData->channelCount != 2) { throw std::runtime_error("[load_audio_internal] Unsupported channel count..."); }
-    std::size_t N = fileData->samples.size() / fileData->channelCount; Eigen::MatrixXf ret(2, N);
-    if (fileData->channelCount == 1) { for (std::size_t i = 0; i < N; ++i) { ret(0, i) = fileData->samples[i]; ret(1, i) = fileData->samples[i]; } }
-    else { for (std::size_t i = 0; i < N; ++i) { ret(0, i) = fileData->samples[2 * i]; ret(1, i) = fileData->samples[2 * i + 1]; } }
-    std::cout << "Info [load_audio_internal]: Loaded " << N << " frames, " << fileData->channelCount << " channels from " << filename << std::endl;
-    return ret;
-}
 
-// --- Model loading ---
+// --- Model loading (remains the same) ---
 static demucsonnx::demucs_model load_model_internal(const std::string& htdemucs_model_path, Ort::SessionOptions& session_options) {
     demucsonnx::demucs_model model; std::ifstream file; std::vector<char> file_data;
-    try { // Wrap file operations
+    try {
         file.open(htdemucs_model_path, std::ios::binary | std::ios::ate);
         if (!file) { throw std::runtime_error("Failed to open model file stream"); }
         std::streamsize size = file.tellg();
@@ -76,294 +51,454 @@ static demucsonnx::demucs_model load_model_internal(const std::string& htdemucs_
         if(file.is_open()) file.close();
         throw std::runtime_error("[load_model_internal] Unknown file IO error (" + htdemucs_model_path + ")");
     }
-    
+
     bool success = false;
-    try { // Wrap demucsonnx::load_model call
-        success = demucsonnx::load_model(file_data, model, session_options); // Assumes this is defined elsewhere
+    try {
+        success = demucsonnx::load_model(file_data, model, session_options);
     } catch (const std::exception& e) {
         throw std::runtime_error("[load_model_internal] demucsonnx::load_model failed: " + std::string(e.what()));
     } catch (...) {
         throw std::runtime_error("[load_model_internal] demucsonnx::load_model failed with unknown exception.");
     }
-    
+
     if (!success) { throw std::runtime_error("[load_model_internal] demucsonnx::load_model returned false."); }
     if (model.nb_sources <= 0) { std::cerr << "Warning [load_model_internal]: Model loaded with " << model.nb_sources << " sources." << std::endl; }
     std::cout << "Info [load_model_internal]: Model loaded with " << model.nb_sources << " sources." << std::endl;
     return model;
 }
 
-// --- Static writer helper ---
-// Takes the output writers, a reusable buffer, and the processed data chunk
+// --- Static writer helper (remains the same) ---
 static void write_audio_chunk_internal(
-                                       std::vector<std::unique_ptr<StreamingWavWriter>>& writers, // Vector of writers for each source
-                                       std::vector<float>& interleaved_write_buffer,           // Reusable buffer for interleaving
-                                       const Eigen::Tensor<float, 3>& chunk_data,              // Processed data (source, channel, sample)
-                                       int num_valid_samples)                                  // Number of samples in this chunk
+                                       std::vector<std::unique_ptr<StreamingWavWriter>>& writers,
+                                       std::vector<float>& interleaved_write_buffer,
+                                       const Eigen::Tensor<float, 3>& chunk_data, // Expects (source, channel, sample)
+                                       int num_valid_samples)
 {
     if (num_valid_samples <= 0) {
-        // std::cout << "Debug [write_audio_chunk_internal]: num_valid_samples is 0, skipping." << std::endl; // Optional debug log
-        return; // Nothing to write
+        return;
     }
-    
-    // Get dimensions from the tensor
+
     const auto current_num_sources = chunk_data.dimension(0);
     const auto num_channels = chunk_data.dimension(1);
-    const auto chunk_num_samples_dim = chunk_data.dimension(2); // Actual sample dimension size in tensor
-    
-    // Validate channel count
+    const auto chunk_num_samples_dim = chunk_data.dimension(2);
+
     if (num_channels != 2) {
         std::cerr << "Error [write_audio_chunk_internal]: Expected 2 channels in chunk data, got " << num_channels << std::endl;
-        return; // Cannot proceed with incorrect channel count
+        return;
     }
-    
-    // Ensure num_valid_samples doesn't exceed the tensor's dimension
+
     if (num_valid_samples > chunk_num_samples_dim) {
         std::cerr << "Warning [write_audio_chunk_internal]: num_valid_samples (" << num_valid_samples
         << ") exceeds chunk data dimension (" << chunk_num_samples_dim << "). Clamping." << std::endl;
         num_valid_samples = chunk_num_samples_dim;
-        if (num_valid_samples <= 0) return; // Return if clamping results in zero samples
+        if (num_valid_samples <= 0) return;
     }
-    
-    // Ensure the reusable buffer is large enough for interleaving
+
     const size_t required_buffer_size = static_cast<size_t>(num_valid_samples) * static_cast<size_t>(num_channels);
-    try { // Protect against potential bad_alloc during resize
+    try {
         if (interleaved_write_buffer.size() < required_buffer_size) {
             interleaved_write_buffer.resize(required_buffer_size);
         }
     } catch (const std::exception& e) {
         std::cerr << "Error [write_audio_chunk_internal]: Failed to resize write buffer: " << e.what() << std::endl;
-        return; // Cannot proceed without buffer
+        return;
     }
-    
-    
-    // Loop through each output source provided in chunk_data
+
+
     for (size_t i = 0; static_cast<Eigen::Index>(i) < current_num_sources; ++i) {
-        // Check if a writer exists and is valid for this source index
         if (i >= writers.size() || !writers[i]) {
-            std::cerr << "Warning [write_audio_chunk_internal]: Invalid or missing writer for source index " << i << std::endl;
-            continue; // Skip this source
+            // Warning logged previously if needed
+            continue;
         }
-        
-        // --- Interleave the stereo data for the current source (i) ---
+
         bool bounds_error_occurred = false;
         for (int k = 0; k < num_valid_samples; ++k) {
-            // Calculate index in the 1D interleaved buffer
             size_t base_idx = static_cast<size_t>(k) * static_cast<size_t>(num_channels);
-            
-            // Basic bounds check before accessing Tensor (k is already checked against num_valid_samples which is clamped)
-            // Check source index 'i' and channel indices 0, 1
+
             if (static_cast<Eigen::Index>(i) >= chunk_data.dimension(0) || 1 >= chunk_data.dimension(1)) {
                 std::cerr << "Error [write_audio_chunk_internal]: Source/Channel index out of bounds during interleave (i=" << i << ", k=" << k << ")." << std::endl;
-                // Fill remaining part of buffer with zeros for this source and stop processing it
                 for (size_t fill_idx = base_idx; fill_idx < required_buffer_size; ++fill_idx) {
                     if(fill_idx < interleaved_write_buffer.size()) interleaved_write_buffer[fill_idx] = 0.0f;
                 }
                 bounds_error_occurred = true;
-                break; // Stop processing samples for this source
+                break;
             }
-            
-            // Access Tensor elements using (source, channel, sample) indices
-            // Left channel
+
             interleaved_write_buffer[base_idx + 0] = chunk_data(i, 0, k);
-            // Right channel
             interleaved_write_buffer[base_idx + 1] = chunk_data(i, 1, k);
-        } // End loop over samples (k)
-        
-        // If a bounds error occurred while interleaving, skip writing for this source
+        }
+
         if (bounds_error_occurred) {
             continue;
         }
-        
-        // --- Write the interleaved data using the appropriate StreamingWavWriter ---
-        // Pass the total number of float samples in the buffer for this chunk
-        if (!writers[i]->append_samples(interleaved_write_buffer.data(), required_buffer_size)) {
-            // append_samples should ideally log its own errors, but we can log here too
-            std::cerr << "Error [write_audio_chunk_internal]: writer->append_samples failed for source index " << i << std::endl;
-            // Decide how to handle this - continue processing other sources? Abort entirely?
-            // For now, just log and continue.
-        }
-    } // End loop over sources (i)
-} // End write_audio_chunk_internal
 
-// --- Implementation of the public C API function ---
+        if (!writers[i]->append_samples(interleaved_write_buffer.data(), required_buffer_size)) {
+            std::cerr << "Error [write_audio_chunk_internal]: writer->append_samples failed for source index " << i << std::endl;
+        }
+    }
+}
+
 extern "C" DemucsResultCode process_demucs_onnx_c(
-                                                  const char* model_path_c,
-                                                  const char* input_wav_path_c,
-                                                  const char* output_dir_path_c,
-                                                  DemucsProgressCallback_C progress_callback_c,
-                                                  void* progress_callback_context,
-                                                  void* cancel_flag_context)
+    const char* model_path_c,
+    const char* input_wav_path_c,
+    const char* output_dir_path_c,
+    DemucsProgressCallback_C progress_callback_c,
+    void* progress_callback_context,
+    void* cancel_flag_context)
 {
-    const std::atomic<bool>* cancel_flag_atomic_ptr = static_cast<const std::atomic<bool>*>(cancel_flag_context);
-    
-    if (!model_path_c || !input_wav_path_c || !output_dir_path_c || !cancel_flag_atomic_ptr) {
-        std::cerr << "Error [C API]: Null path or cancel flag context provided." << std::endl;
+    /* --------------- Setup and validations --------------- */
+    const auto* cancel = static_cast<const std::atomic<bool>*>(cancel_flag_context);
+    if (!model_path_c || !input_wav_path_c || !output_dir_path_c || !cancel)
         return DEMUCS_RESULT_ERROR_INVALID_ARGS;
-    }
-    if (cancel_flag_atomic_ptr->load(std::memory_order_relaxed)) {
-        std::cerr << "Info [C API]: Processing cancelled at entry." << std::endl;
+    if (cancel->load(std::memory_order_relaxed))
         return DEMUCS_RESULT_CANCELLED;
-    }
-    
-    // Declare variables needed across try blocks or for finalization
+
+    StreamingWavReader reader;
     std::vector<std::unique_ptr<StreamingWavWriter>> writers;
-    std::vector<std::string> target_names;
-    DemucsResultCode final_result = DEMUCS_RESULT_SUCCESS; // Assume success initially
-    
-    try { // Outer try for setup stages before main inference call
-        std::string model_file = model_path_c;
-        std::string wav_file = input_wav_path_c;
-        std::string out_dir = output_dir_path_c;
-        std::filesystem::path output_dir_path(out_dir);
-        
-        // Directory Handling
-        std::error_code fs_error_code;
-        if (!std::filesystem::exists(output_dir_path)) {
-            if (!std::filesystem::create_directories(output_dir_path, fs_error_code) || fs_error_code) {
-                std::cerr << "Error [C API]: Unable to create output directory: " << out_dir << " (" << fs_error_code.message() << ")" << std::endl;
-                return DEMUCS_RESULT_ERROR_OUTPUT_DIR; // Early exit on setup failure
-            }
-        } else if (!std::filesystem::is_directory(output_dir_path)) {
-            std::cerr << "Error [C API]: Output path exists but is not a directory: " << out_dir << std::endl;
-            return DEMUCS_RESULT_ERROR_OUTPUT_DIR; // Early exit
+    std::vector<std::string> stem_names;
+    DemucsResultCode result = DEMUCS_RESULT_SUCCESS;
+    drwav_uint64 total_input_frames = 0;
+    long long total_written_orig = 0; // Tracks frames written to output files
+
+    try {
+        // Open input WAV and validate format
+        if (!reader.open(input_wav_path_c))
+            return DEMUCS_RESULT_ERROR_AUDIO_LOAD;
+        total_input_frames = reader.get_total_frames();
+        if (total_input_frames == 0) { reader.close(); return DEMUCS_RESULT_SUCCESS; }
+        if (reader.get_channels() != 2 ||
+            reader.get_sample_rate() != demucsonnx::SUPPORTED_SAMPLE_RATE) {
+             std::cerr << "Error: Unsupported WAV format. Channels: " << reader.get_channels()
+                       << " (expected 2), Sample Rate: " << reader.get_sample_rate()
+                       << " (expected " << demucsonnx::SUPPORTED_SAMPLE_RATE << ")" << std::endl;
+            reader.close();
+            return DEMUCS_RESULT_ERROR_AUDIO_LOAD;
         }
-        
-        // Load Audio
-        Eigen::MatrixXf audio_data;
-        try { audio_data = load_audio_file_internal(wav_file); }
-        catch (const std::exception& e) { std::cerr << "Error [C API]: Failed loading audio '" << wav_file << "': " << e.what() << std::endl; return DEMUCS_RESULT_ERROR_AUDIO_LOAD; }
-        catch (...) { std::cerr << "Error [C API]: Unknown error loading audio '" << wav_file << "'." << std::endl; return DEMUCS_RESULT_ERROR_AUDIO_LOAD; }
-        if (audio_data.cols() == 0) { std::cerr << "Info [C API]: Audio file loaded successfully but contains no samples: " << wav_file << std::endl; return DEMUCS_RESULT_SUCCESS; }
-        
-        // Load Model & Setup Session
-        Ort::SessionOptions session_options;
-        session_options.DisableMemPattern(); session_options.DisableCpuMemArena(); session_options.SetExecutionMode(ExecutionMode::ORT_PARALLEL);
-        
-        session_options.SetIntraOpNumThreads(4); session_options.SetInterOpNumThreads(4);
-        session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
-        demucsonnx::demucs_model model;
-        try { model = load_model_internal(model_file, session_options); }
-        catch (const std::exception& e) { std::cerr << "Error [C API]: Failed model load '" << model_file << "': " << e.what() << std::endl; return DEMUCS_RESULT_ERROR_MODEL_LOAD; }
-        catch (...) { std::cerr << "Error [C API]: Unknown error loading model '" << model_file << "'." << std::endl; return DEMUCS_RESULT_ERROR_MODEL_LOAD; }
-        if (model.nb_sources <= 0) { std::cerr << "Error [C API]: Model loaded with invalid number of sources: " << model.nb_sources << std::endl; return DEMUCS_RESULT_ERROR_MODEL_LOAD; }
-        
-        // Prepare Streaming Writers (with added exception safety)
-        int nb_out_sources = model.nb_sources;
-        // Clear vectors in case of retry logic (though not present here)
-        writers.clear();
-        target_names.clear();
-        try { // Wrap the loop that might throw
-            for (int target = 0; target < nb_out_sources; ++target) {
-                std::string target_name;
-                switch (target) {
-                    case 0: target_name = "drums"; break; case 1: target_name = "bass"; break;
-                    case 2: target_name = "other"; break; case 3: target_name = "vocals"; break;
-                    case 4: target_name = "guitar"; break; case 5: target_name = "piano"; break;
-                    default: target_name = "source_" + std::to_string(target); break;
-                }
-                if (target_name.empty()) { std::cerr << "Error [C API]: Generated empty target name for index " << target << std::endl; return DEMUCS_RESULT_ERROR_UNKNOWN; }
-                target_names.push_back(target_name);
-                std::string filename_only = target_name + ".wav";
-                std::filesystem::path p_target = output_dir_path / filename_only;
-                std::cout << "Info [C API]: Preparing writer for: " << p_target.string() << std::endl;
-                auto writer = std::make_unique<StreamingWavWriter>(); // Can throw bad_alloc
-                if (!writer->open(p_target.string(), demucsonnx::SUPPORTED_SAMPLE_RATE, 2)) { // open might throw or return false
-                    std::cerr << "Error [C API]: Failed opening writer: " << p_target.string() << std::endl;
-                    return DEMUCS_RESULT_ERROR_WRITER_OPEN; // Return specific error
-                }
-                writers.push_back(std::move(writer));
+
+        // Create output directory if needed
+        std::filesystem::path out_dir(output_dir_path_c);
+        std::error_code ec;
+        // (Error handling for directory creation/validation remains the same)
+        if (!std::filesystem::exists(out_dir)) {
+            if (!std::filesystem::create_directories(out_dir, ec)) {
+                 std::cerr << "Error: Cannot create output directory: " << out_dir << " (" << ec.message() << ")" << std::endl;
+                reader.close();
+                return DEMUCS_RESULT_ERROR_OUTPUT_DIR;
             }
-        } catch (const std::exception& e) {
-            std::cerr << "Error [C API]: Exception during writer preparation: " << e.what() << std::endl;
-            return DEMUCS_RESULT_ERROR_WRITER_OPEN; // Treat setup issues as writer open error
-        } catch (...) {
-            std::cerr << "Error [C API]: Unknown exception during writer preparation." << std::endl;
-            return DEMUCS_RESULT_ERROR_WRITER_OPEN;
+        } else if (!std::filesystem::is_directory(out_dir)) {
+             std::cerr << "Error: Output path exists but is not a directory: " << out_dir << std::endl;
+            reader.close();
+            return DEMUCS_RESULT_ERROR_OUTPUT_DIR;
         }
-        
-        
-        // Prepare C++ Callbacks (with added exception safety)
+
+        // Load ONNX model
+        Ort::SessionOptions so;
+        so.DisableMemPattern();
+        so.DisableCpuMemArena();
+        so.SetExecutionMode(ExecutionMode::ORT_SEQUENTIAL);
+        so.SetIntraOpNumThreads(std::max(1u, std::thread::hardware_concurrency() / 2));
+        so.SetInterOpNumThreads(1);
+        so.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
+        demucsonnx::demucs_model model = load_model_internal(model_path_c, so);
+        if (model.nb_sources <= 0) {
+            reader.close();
+            return DEMUCS_RESULT_ERROR_MODEL_LOAD;
+        }
+        const int nb_stems = model.nb_sources;
+
+        // Open output stem files
+        // (Logic remains the same)
+        const char* def_names[] = {"drums","bass","other","vocals","guitar","piano"};
+        for (int s = 0; s < nb_stems; ++s) {
+            std::string nm = (s < static_cast<int>(sizeof(def_names)/sizeof(def_names[0])) ? def_names[s] : "source_" + std::to_string(s));
+            stem_names.push_back(nm);
+            auto w = std::make_unique<StreamingWavWriter>();
+            std::string out_path_str = (out_dir / (nm + ".wav")).string();
+            if (!w->open(out_path_str, reader.get_sample_rate(), reader.get_channels())) {
+                 std::cerr << "Error: Failed to open output file: " << out_path_str << std::endl;
+                reader.close();
+                for(auto& writer_to_close : writers) { if (writer_to_close) writer_to_close->finalize(); }
+                return DEMUCS_RESULT_ERROR_WRITER_OPEN;
+            }
+            writers.push_back(std::move(w));
+        }
+
+
+        // Progress callback setup
+        demucsonnx::ProgressCallback prog;
+        // (Logic remains the same)
+        if (progress_callback_c) {
+            prog = [=](float p, const std::string& m) {
+                if (!cancel->load(std::memory_order_relaxed)) {
+                    progress_callback_c(progress_callback_context, p, m.c_str());
+                }
+            };
+        } else {
+            prog = [](float, const std::string&) {};
+        }
+
+
+        /* --------- Compute global mean and std for normalization --------- */
+        // (Logic remains the same)
+        double sum = 0.0, sumsq = 0.0;
+        drwav_uint64 n = 0;
+        const drwav_uint64 STAT_CHUNK = 44100 * 10;
+        Eigen::MatrixXf statbuf;
+        while (drwav_uint64 fr = reader.read_chunk(statbuf, STAT_CHUNK)) {
+            if (fr > 0) {
+                sum   += statbuf.leftCols(fr).sum();
+                sumsq += statbuf.leftCols(fr).array().square().sum();
+                n += fr * reader.get_channels();
+            }
+        }
+        if (n == 0) {
+             reader.close();
+             for(auto& writer_to_close : writers) { if (writer_to_close) writer_to_close->finalize(); }
+             return DEMUCS_RESULT_SUCCESS;
+        }
+        reader.seek_to_frame(0);
+        float mean = static_cast<float>(sum / n);
+        float stdv = std::sqrt(std::max(0.0, (sumsq / n) - static_cast<double>(mean * mean)));
+        if (stdv < 1e-8f) stdv = 1.0f;
+
+        /* ------------ Segment and overlap parameters ------------ */
+        const int seg = int(demucsonnx::SEGMENT_LEN_SECS * reader.get_sample_rate());
+        const int hop = int((1.0f - demucsonnx::OVERLAP) * seg); // Stride
+        demucsonnx::demucs_segment_buffers segbuf(2, seg, nb_stems);
+        demucsonnx::stft_buffers stftbuf(segbuf.padded_segment_samples);
+
+        // REMOVED: Cross-fade weight window is no longer needed here
+        // Eigen::VectorXf weight(seg);
+        // ... weight calculation removed ...
+
+        // Overlap-add buffer (circular)
+        const int ring_len = seg + hop; // Use a buffer size that can hold a full segment + a hop
+        Eigen::Tensor<float, 3> ola(nb_stems, 2, ring_len);
+        ola.setZero();
+        // REMOVED: wsum buffer is no longer needed
+        // Eigen::VectorXf wsum(ring_len);
+        // wsum.setZero();
+
+        // Buffer for writing output and interleaving
+        Eigen::Tensor<float, 3> processed_stride(nb_stems, 2, hop); // Holds one stride of output
         std::vector<float> interleaved_write_buffer;
-        demucsonnx::WriteChunkCallback write_chunk_callback_obj;
-        demucsonnx::ProgressCallback progressCallbackInternal;
-        try { // Wrap potentially throwing std::bind/lambda creation
-            using namespace std::placeholders;
-            write_chunk_callback_obj =
-            std::bind(&write_audio_chunk_internal, std::ref(writers), std::ref(interleaved_write_buffer), _1, _2);
-            
-            if (progress_callback_c) {
-                progressCallbackInternal = [=](float p, const std::string& m){ if (!cancel_flag_atomic_ptr->load()) progress_callback_c(progress_callback_context, p, m.c_str()); };
-            } else { progressCallbackInternal = [](float, const std::string&){}; }
-        } catch (const std::exception& e) {
-            std::cerr << "Error [C API]: Exception during callback preparation: " << e.what() << std::endl;
-            return DEMUCS_RESULT_ERROR_UNKNOWN; // Or CPP_EXCEPTION
-        } catch (...) {
-            std::cerr << "Error [C API]: Unknown exception during callback preparation." << std::endl;
-            return DEMUCS_RESULT_ERROR_UNKNOWN;
-        }
-        
-        
-        // Run In-Memory Incremental Inference (call external function)
-        std::cout << "Info [C API]: Starting inference call..." << std::endl;
-        try {
-            final_result = demucsonnx::demucs_inference_incremental(
-                                                                    model, audio_data, progressCallbackInternal, write_chunk_callback_obj, cancel_flag_atomic_ptr
-                                                                    );
-        } catch (const std::exception& e) {
-            final_result = DEMUCS_RESULT_ERROR_INFERENCE; // Assign specific code
-            std::cerr << "Error [C API]: std::exception caught during inference call: " << e.what() << std::endl;
-        } catch (...) {
-            final_result = DEMUCS_RESULT_ERROR_INFERENCE; // Assign specific code
-            std::cerr << "Error [C API]: Unknown exception caught during inference call." << std::endl;
-        }
-        std::cout << "Info [C API]: Inference call returned with code: " << final_result << std::endl;
-        
-        // audio_data goes out of scope here
-        
-        // Catch C++ Exceptions from the setup stages (audio/model load, directory, writer/callback prep)
-    } catch (const std::exception &e) {
-        std::cerr << "Error [C API]: C++ std::exception caught during setup: " << e.what() << std::endl;
-        // Determine more specific error code based on where it likely happened?
-        // For now, use a general C++ exception code.
-        final_result = DEMUCS_RESULT_ERROR_CPP_EXCEPTION;
-    } catch (...) {
-        std::cerr << "Error [C API]: Unknown C++ exception caught during setup." << std::endl;
-        final_result = DEMUCS_RESULT_ERROR_UNKNOWN;
-    }
-    
-    // --- Finalize Writers (Always attempt unless setup failed badly before writers were created) ---
-    // We attempt finalization even if inference failed or was cancelled,
-    // as partial files might still be desired or need proper closing.
-    if (!writers.empty()) { // Check if writers were successfully created
-        bool all_finalized = true;
-        std::cout << "Info [C API]: Finalizing output writers..." << std::endl;
-        for (size_t i = 0; i < writers.size(); ++i) {
-            try { // Add try/catch around finalize
-                if (writers[i] && !writers[i]->finalize()) {
-                    all_finalized = false;
-                    std::cerr << "Error [C API]: Failed finalizing writer for " << (i < target_names.size() ? target_names[i] : "unknown") << std::endl;
-                }
-            } catch (const std::exception& e) {
-                all_finalized = false;
-                std::cerr << "Error [C API]: Exception finalizing writer for " << (i < target_names.size() ? target_names[i] : "unknown") << ": " << e.what() << std::endl;
-            } catch (...) {
-                all_finalized = false;
-                std::cerr << "Error [C API]: Unknown exception finalizing writer for " << (i < target_names.size() ? target_names[i] : "unknown") << std::endl;
+
+        /* ---------------- Chunked processing (Simplified Overlap) ---------------- */
+        const drwav_uint64 READ_CHUNK_FRAMES = 44100 * 30; // Process ~30 seconds chunks
+        Eigen::MatrixXf input_chunk_buffer;                // Holds raw audio data read from file
+
+        long long current_input_frame_global = 0; // Tracks global position *read* from the input file
+        long long next_write_frame = 0;           // Tracks the next frame index to write to output files
+        long long max_processed_frame = -1;       // Tracks highest frame index whose contribution has been *added* to OLA
+
+        // Read and process the WAV in chunks
+        while (true) {
+            if (cancel->load(std::memory_order_relaxed)) {
+                result = DEMUCS_RESULT_CANCELLED;
+                break;
             }
+
+            // --- Read next chunk ---
+            drwav_uint64 frames_read_this_chunk = reader.read_chunk(input_chunk_buffer, READ_CHUNK_FRAMES);
+            if (frames_read_this_chunk == 0 && current_input_frame_global >= (long long)total_input_frames) {
+                break; // Truly end of file
+            }
+             if (frames_read_this_chunk == 0 && current_input_frame_global < (long long)total_input_frames) {
+                 std::cerr << "Warning: WAV reader returned 0 frames before reaching expected end." << std::endl;
+                 break; // Unexpected end or read error
+             }
+
+            long long process_start_frame = current_input_frame_global; // Monotonic start frame
+
+            // --- Normalize and Process ---
+            Eigen::MatrixXf normalized_chunk = (input_chunk_buffer.leftCols(frames_read_this_chunk).array() - mean) / stdv;
+
+            // NOTE: Pass nullptr for the weight argument as it's no longer used
+            result = demucsonnx::demucs_inference_process_chunk(
+                model, normalized_chunk, process_start_frame,
+                ola,
+                segbuf, stftbuf, cancel
+            );
+            if (result != DEMUCS_RESULT_SUCCESS) {
+                break; // Stop processing on error or cancel
+            }
+
+            // Update trackers
+            max_processed_frame = std::max(max_processed_frame, process_start_frame + (long long)frames_read_this_chunk - 1);
+            current_input_frame_global += frames_read_this_chunk; // Update after using old value
+
+            // --- Flush fully processed segments from OLA to output ---
+            // Read when the OLA buffer contains enough processed data for the next stride
+            // The condition checks if the frame *at the end* of the hop has been processed.
+            while (max_processed_frame >= next_write_frame + hop - 1)
+            {
+                 // Break if we've already written the whole file
+                 if (next_write_frame >= (long long)total_input_frames) {
+                      break;
+                 }
+
+                // Reconstruct one stride of audio (length = hop)
+                for (int s = 0; s < nb_stems; ++s) {
+                    for (int c = 0; c < 2; ++c) {
+                        for (int k = 0; k < hop; ++k) {
+                            long long frame_idx_global = next_write_frame + k;
+                            int buffer_idx = frame_idx_global % ring_len;
+                            if (buffer_idx < 0) buffer_idx += ring_len; // Ensure positive index
+
+                            // Read directly from OLA buffer (no division by wsum)
+                            float v = ola(s, c, buffer_idx);
+
+                            // Clamp k to ensure it's within processed_stride bounds
+                            if (k < processed_stride.dimension(2)) {
+                               processed_stride(s, c, k) = v * stdv + mean; // Denormalize
+                            } else {
+                                // Should not happen if hop <= processed_stride.dimension(2)
+                                std::cerr << "Warning: Index k (" << k << ") out of bounds for processed_stride." << std::endl;
+                            }
+
+                            // Clear the OLA buffer slots as they are read
+                            ola(s, c, buffer_idx) = 0.0f;
+                        }
+                    }
+                }
+                // REMOVED: Clearing wsum buffer is no longer needed
+
+                // Determine valid range to write (clamp to total_input_frames)
+                long long remaining_output_frames = (long long) total_input_frames - next_write_frame;
+                int valid_samples_in_stride = std::min<long long>(hop, std::max<long long>(0, remaining_output_frames));
+
+                if (valid_samples_in_stride > 0) {
+                     // Ensure processed_stride has enough columns before slicing
+                     if (valid_samples_in_stride <= processed_stride.dimension(2)) {
+                          Eigen::Tensor<float, 3> slice =
+                              processed_stride.slice(Eigen::array<Eigen::Index, 3>{0, 0, 0},
+                                                      Eigen::array<Eigen::Index, 3>{nb_stems, 2, valid_samples_in_stride});
+                          write_audio_chunk_internal(writers, interleaved_write_buffer, slice, valid_samples_in_stride);
+                          total_written_orig += valid_samples_in_stride;
+                     } else {
+                          std::cerr << "Error: Logic error - valid_samples_in_stride (" << valid_samples_in_stride
+                                    << ") exceeds processed_stride buffer size (" << processed_stride.dimension(2) << ")" << std::endl;
+                     }
+                }
+
+                // Advance the write pointer
+                next_write_frame += hop;
+
+                // Update progress
+                if (prog && total_input_frames > 0) {
+                    prog(float(total_written_orig) / float(total_input_frames), "Processing");
+                }
+                 // Break inner loop if done
+                 if (total_written_orig >= (long long)total_input_frames) {
+                      break;
+                 }
+            } // end while writing strides
+
+            // Break outer loop if done
+            if (total_written_orig >= (long long)total_input_frames) {
+                break;
+            }
+
+        } // end while reading chunks
+
+        // Check for cancellation/errors after main loop
+        if (result != DEMUCS_RESULT_SUCCESS) {
+             reader.close();
+             for (auto &w : writers) { if (w) w->finalize(); }
+             return result;
         }
-        // Only override a SUCCESS code with a finalize error. Keep cancellation or earlier errors.
-        if (!all_finalized && final_result == DEMUCS_RESULT_SUCCESS) {
-            final_result = DEMUCS_RESULT_ERROR_WRITER_FINALIZE;
+
+        /* ---------------- Final Flush ---------------- */
+        // This loop ensures any remaining frames up to total_input_frames are written.
+        while (total_written_orig < (long long) total_input_frames)
+        {
+             // Check if data is ready in OLA
+             if (max_processed_frame < next_write_frame + hop - 1) {
+                  // Data might not be fully ready if the input ended abruptly or processing stalled.
+                  // Break and potentially leave the output slightly truncated.
+                  if (next_write_frame < (long long)total_input_frames) { // Only warn if we haven't reached the end yet
+                     std::cerr << "Warning: Final flush loop stalled waiting for data. Max processed: " << max_processed_frame
+                               << ", Next write start: " << next_write_frame << ". Output might be short." << std::endl;
+                  }
+                  break;
+             }
+
+             // Reconstruct one stride
+             for (int s = 0; s < nb_stems; ++s) {
+                 for (int c = 0; c < 2; ++c) {
+                     for (int k = 0; k < hop; ++k) {
+                         long long frame_idx_global = next_write_frame + k;
+                         int buffer_idx = frame_idx_global % ring_len;
+                         if (buffer_idx < 0) buffer_idx += ring_len;
+
+                         // Read directly, no wsum division
+                         float v = ola(s, c, buffer_idx);
+
+                         if (k < processed_stride.dimension(2)) {
+                            processed_stride(s, c, k) = v * stdv + mean; // Denormalize
+                         }
+                         ola(s, c, buffer_idx) = 0.0f; // Clear OLA
+                     }
+                 }
+             }
+             // REMOVED: Clearing wsum buffer
+
+             // Determine valid range (clamp to total_input_frames)
+             long long remaining_output_frames = (long long) total_input_frames - next_write_frame;
+             int valid_samples_in_stride = std::min<long long>(hop, std::max<long long>(0, remaining_output_frames));
+
+             if (valid_samples_in_stride > 0) {
+                  if (valid_samples_in_stride <= processed_stride.dimension(2)) {
+                      Eigen::Tensor<float, 3> slice =
+                          processed_stride.slice(Eigen::array<Eigen::Index, 3>{0, 0, 0},
+                                                  Eigen::array<Eigen::Index, 3>{nb_stems, 2, valid_samples_in_stride});
+                      write_audio_chunk_internal(writers, interleaved_write_buffer, slice, valid_samples_in_stride);
+                      total_written_orig += valid_samples_in_stride;
+                  } else {
+                       std::cerr << "Error: Logic error in final flush - valid_samples_in_stride (" << valid_samples_in_stride
+                                 << ") exceeds buffer size (" << processed_stride.dimension(2) << ")" << std::endl;
+                  }
+             }
+
+             // Advance write pointer
+             next_write_frame += hop;
+
+             // Update progress
+             if (prog && total_input_frames > 0) {
+                 prog(float(total_written_orig) / float(total_input_frames), "Finalizing");
+             }
+        } // end final flush loop
+
+        // Final progress update
+        if (prog && total_input_frames > 0) {
+             prog(1.0f, "Done");
         }
-    } else {
-        std::cout << "Info [C API]: Skipping finalization as writers were not created." << std::endl;
+
+    } catch (const std::bad_alloc& e) { // Catch memory allocation errors specifically
+        std::cerr << "[process_demucs_onnx_c] Memory allocation Exception: " << e.what() << std::endl;
+        result = DEMUCS_RESULT_ERROR_OUT_OF_MEMORY;
+    } catch (const std::exception& e) {
+        std::cerr << "[process_demucs_onnx_c] Exception: " << e.what() << std::endl;
+        result = DEMUCS_RESULT_ERROR_CPP_EXCEPTION;
+    } catch (...) {
+        std::cerr << "[process_demucs_onnx_c] Unknown exception occurred." << std::endl;
+        result = DEMUCS_RESULT_ERROR_CPP_EXCEPTION;
     }
-    
-    // Final log based on the determined result code
-    if (final_result == DEMUCS_RESULT_CANCELLED) { std::cerr << "Info [C API]: Processing was cancelled." << std::endl; }
-    else if (final_result != DEMUCS_RESULT_SUCCESS) { std::cerr << "Info [C API]: Processing finished with error code: " << final_result << std::endl; }
-    else { std::cout << "Info [C API]: Processing finished successfully." << std::endl; }
-    
-    return final_result; // Return the final determined result code
-    
-} // End of process_demucs_onnx_c
+
+    // --- Cleanup ---
+    reader.close();
+    for (auto &w : writers) {
+        if (w) w->finalize();
+    }
+
+     // Final check on written frames
+     if (total_written_orig < (long long)total_input_frames && result == DEMUCS_RESULT_SUCCESS) {
+         std::cerr << "Warning: Final output length (" << total_written_orig
+                   << ") is shorter than input length (" << total_input_frames << ")." << std::endl;
+     } else if (total_written_orig > (long long)total_input_frames) {
+          std::cerr << "Warning: Final output length (" << total_written_orig
+                    << ") is longer than input length (" << total_input_frames << ")." << std::endl;
+     }
+
+    return result;
+}

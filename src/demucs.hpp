@@ -128,12 +128,18 @@ Eigen::Tensor3dXf demucs_inference(struct demucs_model &model,
                                    const Eigen::MatrixXf &audio,
                                    ProgressCallback cb);
 
-DemucsResultCode demucs_inference_incremental(struct demucsonnx::demucs_model &model,
-                                              const Eigen::MatrixXf &audio,
-                                              demucsonnx::ProgressCallback cb,
-                                              const WriteChunkCallback& write_callback,
-                                              const std::atomic<bool>* cancel_flag
-                                              );
+DemucsResultCode demucs_inference_process_chunk(
+    // Inputs for this chunk
+    struct demucsonnx::demucs_model &model,
+    const Eigen::MatrixXf &audio_chunk,         // The current chunk (normalized)
+    long long chunk_start_frame_shifted,        // Global start frame of this chunk in the *shifted* domain
+    // OLA Buffers (updated by this function)
+    Eigen::Tensor<float, 3>& output_buffer,     // Overlap-add buffer (circular)
+    demucsonnx::demucs_segment_buffers& buffers, // Reusable segment buffers
+    demucsonnx::stft_buffers& stft_buf,          // Reusable STFT buffers
+    // Control
+    const std::atomic<bool>* cancel_flag
+);
 
 void model_inference(struct demucs_model &model,
                      struct demucsonnx::demucs_segment_buffers &buffers,
