@@ -10,3 +10,17 @@ onnx-models/
 demucs-onnx/
 .DS_Store
 **/.DS_Store
+
+# Xcode
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcworkspace/xcuserdata/
+UserInterfaceState.xcuserstate
+project.xcworkspace/
+xcuserdata/
+
+# Xcode Patch
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/*.xcworkspace/contents.xcworkspacedata

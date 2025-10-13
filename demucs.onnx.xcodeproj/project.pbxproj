@@ -1,0 +1,1571 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		05CDBF7DAB4C818E701DD9FB /* ALL_BUILD */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 51C40F084901421E9930D26F /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */;
+			buildPhases = (
+				621987CFA773FE30413ECF3E /* Generate CMakeFiles/ALL_BUILD */,
+			);
+			dependencies = (
+				A9E7633B37BF436BB5D61E44 /* PBXTargetDependency */,
+				6EBEE5A9C5A34C5F90B60879 /* PBXTargetDependency */,
+				B0CAD14288C341E1B4608F00 /* PBXTargetDependency */,
+			);
+			name = ALL_BUILD;
+			productName = ALL_BUILD;
+		};
+		16D18C820EC41E43624D0A6C /* install */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 65C45E7E10FF4E68A7ADAEF4 /* Build configuration list for PBXAggregateTarget "install" */;
+			buildPhases = (
+				93426DA6A4AC2C2AC9CE883C /* CMake PostBuild Rules */,
+			);
+			dependencies = (
+				D7E8EDE221044DBA8C7D2A7A /* PBXTargetDependency */,
+			);
+			name = install;
+			productName = install;
+		};
+		A60B7676A8D2D7E472FE2557 /* RUN_TESTS */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = EED53D21CFCD4EC78B30BD6C /* Build configuration list for PBXAggregateTarget "RUN_TESTS" */;
+			buildPhases = (
+				003C8D08B0008F35F218E126 /* CMake PostBuild Rules */,
+			);
+			dependencies = (
+			);
+			name = RUN_TESTS;
+			productName = RUN_TESTS;
+		};
+		EF9D33433E3B986D09B781B1 /* ZERO_CHECK */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = E6056F24D7C14D76823468C2 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */;
+			buildPhases = (
+				44B9E87EE81BBA971DBA338C /* Generate CMakeFiles/ZERO_CHECK */,
+			);
+			dependencies = (
+			);
+			name = ZERO_CHECK;
+			productName = ZERO_CHECK;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		060BED81666F4A4599003D9A /* extra1.c in Sources */ = {isa = PBXBuildFile; fileRef = 61E187B2C6C74796BE410AEF /* extra1.c */; };
+		08B0E3059B3149A99EB8E330 /* unpack_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 89E7530FD6A04B528AFF07CE /* unpack_utils.c */; };
+		0E3CE5ECB8CA4236A40F6B5B /* tags.c in Sources */ = {isa = PBXBuildFile; fileRef = 92879B75274145D4955904BA /* tags.c */; };
+		12A0E7B1D96246419DA8793E /* tag_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = AA64A9C46DB34CD3B25BCF88 /* tag_utils.c */; };
+		15E73966A32344B8A35FE263 /* unpack_dsd.c in Sources */ = {isa = PBXBuildFile; fileRef = 56CE48B919AF46448E9B7FF8 /* unpack_dsd.c */; };
+		16C89612486C447292F2FE35 /* open_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = CCD1A5D6BFCF4AD8AEB91663 /* open_utils.c */; };
+		1E7F3D20F55042C1B4D0D5C2 /* read_words.c in Sources */ = {isa = PBXBuildFile; fileRef = A75C5B35ABBF4FAD94621AD0 /* read_words.c */; };
+		210242821C9947A8B4E8421E /* unpack_seek.c in Sources */ = {isa = PBXBuildFile; fileRef = D0BD7C83F20643AE8A0D2D83 /* unpack_seek.c */; };
+		2931F7B11A6B4BB9A0BE2482 /* OpusDependencies.c in Sources */ = {isa = PBXBuildFile; fileRef = 07F8A21EEC6945F9B563C8DD /* OpusDependencies.c */; };
+		2AE953CAC1A44000A4FE61B1 /* pack_dns.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A32C5F178844B0F9C4F8E31 /* pack_dns.c */; };
+		3444FEE026264B27AE91B434 /* demucs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E7047FE381B44DF0BD8F5050 /* demucs.cpp */; };
+		3C464E478DFF42678CDCBD37 /* unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = 09246C9B5BFD496585FAD589 /* unpack.c */; };
+		42DEFFF60C864213A7B7FD3E /* extra2.c in Sources */ = {isa = PBXBuildFile; fileRef = 5A16B0480AFD49F3938AB2D5 /* extra2.c */; };
+		482CCD2AED89416EA0FF65CD /* decorr_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 840FA3BF8EDA4B1096750769 /* decorr_utils.c */; };
+		4BA35A1942664D05A85D249C /* pack.c in Sources */ = {isa = PBXBuildFile; fileRef = D7703C027D5E4507813D3A19 /* pack.c */; };
+		540A8443EECB4F6B8366F866 /* OpusDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1EB9ED803E4402795EFBC61 /* OpusDecoder.cpp */; };
+		63BA6B7BEF924DE9BA5F970B /* pack_dsd.c in Sources */ = {isa = PBXBuildFile; fileRef = 6836D534DCC649B39500DBE2 /* pack_dsd.c */; };
+		65C7E3A482724C6C87AB9F6F /* Mp3Decoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17BB3C307834FDEA7562592 /* Mp3Decoder.cpp */; };
+		66CDF4F230AD41539FC45E39 /* pack_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 156B103A7ADD49A887D63C55 /* pack_utils.c */; };
+		689F117F3CE24718A0148E9D /* WavDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50C4907E935F4FD7ACBF5323 /* WavDecoder.cpp */; };
+		692624225FFB42A0897577E1 /* unpack3.c in Sources */ = {isa = PBXBuildFile; fileRef = F28BA884C23A46BDADE03926 /* unpack3.c */; };
+		73541C7D750B47D2BB8E4644 /* open_legacy.c in Sources */ = {isa = PBXBuildFile; fileRef = D3F869C83847427DAF1A3E6C /* open_legacy.c */; };
+		7E15EA2B610C42ACADAA1053 /* dsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 856C669DB7604539BFD649BA /* dsp.cpp */; };
+		864EB661A81E41BAB68E4AE8 /* MusepackDependencies.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BA725960C52481583354418 /* MusepackDependencies.c */; };
+		8D91FA1768BD4F95AD677FF7 /* write_words.c in Sources */ = {isa = PBXBuildFile; fileRef = 2963B3F30B03436C9DA62C07 /* write_words.c */; };
+		8F4FC6A1EF4346DEAFB4EB7D /* FlacDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F8300720F841AE987EC51F /* FlacDecoder.cpp */; };
+		9088F937EE7249FD9C65C0CD /* unpack3_seek.c in Sources */ = {isa = PBXBuildFile; fileRef = 0A1A0FF653DC486FB7BA83ED /* unpack3_seek.c */; };
+		953302254ED24EF0A250740F /* Common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B6E4868488EE48AB975EF414 /* Common.cpp */; };
+		A714006554F54B29A487B959 /* WavPackDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C97CCDB436384D12BD11DF54 /* WavPackDecoder.cpp */; };
+		AA0685062D9B1F5500249B7C /* DemucsProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA0685052D9B1F4100249B7C /* DemucsProcessor.mm */; };
+		AA4710C32D988A9300CD58B2 /* wav_writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA4710C22D988A9300CD58B2 /* wav_writer.cpp */; };
+		AAAAA79E2DB827C200429ADC /* wav_reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAAAA79D2DB827C200429ADC /* wav_reader.cpp */; };
+		B69458AF5A034DE68039DAD4 /* entropy_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = BADBE9F98F9442538B186B81 /* entropy_utils.c */; };
+		B8F3697E550E453DB5C0474A /* pack_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 27734ACA69A44E3B98D93060 /* pack_floats.c */; };
+		C3AFCEC838C34ADC91D635DB /* open_filename.c in Sources */ = {isa = PBXBuildFile; fileRef = CE55337153484FE1B15C8A5B /* open_filename.c */; };
+		D2763C110EE647038EC6F3F3 /* VorbisDependencies.c in Sources */ = {isa = PBXBuildFile; fileRef = 3AB39C34D96E45E08E2FD13D /* VorbisDependencies.c */; };
+		D51DCEA53266400C8B481764 /* unpack_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 709092DB888C42CA8E962C0D /* unpack_floats.c */; };
+		E7AC0FFDE0CD404D8BDEBE36 /* FlacDependencies.c in Sources */ = {isa = PBXBuildFile; fileRef = F24DDB30BC3E4E028F1328AB /* FlacDependencies.c */; };
+		EE56136A1FCA46DCBCAF7F89 /* unpack3_open.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED01E65F1284387B0578E8B /* unpack3_open.c */; };
+		F265734F07F046889B8DF0BA /* open_raw.c in Sources */ = {isa = PBXBuildFile; fileRef = 73027EB169F247F7B65911CB /* open_raw.c */; };
+		F5E2C161F5F942F9B71B8042 /* model_apply.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 373716CE2C764F56A9CD572E /* model_apply.cpp */; };
+		F82FB1ACFA4B4A2A9B9D6206 /* Encoders.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3BEB4F5FF63F44D686DFD1B2 /* Encoders.cpp */; };
+		FB95AA5E4A68494AA8F907B2 /* VorbisDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A368CDC3CA70415AA10C8B0D /* VorbisDecoder.cpp */; };
+		FC8800A57F5948F99C1D771E /* MusepackDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC9B2FEC5E79463CA69531F6 /* MusepackDecoder.cpp */; };
+		FDD05D32D8CA49EDB832DDB9 /* model_inference.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6133D950764F46F894EEC40C /* model_inference.cpp */; };
+		FE2BAA1A001A46ECA66F8BE9 /* common_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 091DE0F5A2234FB597EE74C5 /* common_utils.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0FCFAE71BFB943CBB698B8B3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31238F3D22E24DF18CC0A58A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D6CB40D4BA72BB0A921AB17;
+			remoteInfo = libnyquist;
+		};
+		723A49319674450294D0F535 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31238F3D22E24DF18CC0A58A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D6CB40D4BA72BB0A921AB17;
+			remoteInfo = libnyquist;
+		};
+		7B5C187AB19844FEBBBFA2CC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31238F3D22E24DF18CC0A58A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 05CDBF7DAB4C818E701DD9FB;
+			remoteInfo = ALL_BUILD;
+		};
+		B95D23CD57C3436CB530D50D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31238F3D22E24DF18CC0A58A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EF9D33433E3B986D09B781B1;
+			remoteInfo = ZERO_CHECK;
+		};
+		CD55C8DF4425420B92E9D1C0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31238F3D22E24DF18CC0A58A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EF9D33433E3B986D09B781B1;
+			remoteInfo = ZERO_CHECK;
+		};
+		F0E6BAC6951F47E0B7862F87 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31238F3D22E24DF18CC0A58A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8F919C0B23345F63379D081A;
+			remoteInfo = demucs;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		07F8A21EEC6945F9B563C8DD /* OpusDependencies.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = OpusDependencies.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src/OpusDependencies.c; sourceTree = "<absolute>"; };
+		091DE0F5A2234FB597EE74C5 /* common_utils.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = common_utils.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/common_utils.c; sourceTree = "<absolute>"; };
+		09246C9B5BFD496585FAD589 /* unpack.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = unpack.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/unpack.c; sourceTree = "<absolute>"; };
+		0A1A0FF653DC486FB7BA83ED /* unpack3_seek.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = unpack3_seek.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/unpack3_seek.c; sourceTree = "<absolute>"; };
+		156B103A7ADD49A887D63C55 /* pack_utils.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = pack_utils.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/pack_utils.c; sourceTree = "<absolute>"; };
+		1C4CDC947FED48BFA6E5B100 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = sourcecode.text.plist; fileEncoding = 4; lastKnownFileType = text.plist; name = Info.plist; path = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/CMakeFiles/demucs.dir/Info.plist"; sourceTree = "<absolute>"; };
+		1DDB064A919C408FA6B962A9 /* libdemucs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libdemucs.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		209203BD9A424E05B959BE4B /* CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		27734ACA69A44E3B98D93060 /* pack_floats.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = pack_floats.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/pack_floats.c; sourceTree = "<absolute>"; };
+		27C385A5366A4C44885E8773 /* liblibnyquist_d.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = liblibnyquist_d.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2963B3F30B03436C9DA62C07 /* write_words.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = write_words.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/write_words.c; sourceTree = "<absolute>"; };
+		2ED01E65F1284387B0578E8B /* unpack3_open.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = unpack3_open.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/unpack3_open.c; sourceTree = "<absolute>"; };
+		373716CE2C764F56A9CD572E /* model_apply.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = model_apply.cpp; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/src/model_apply.cpp; sourceTree = "<absolute>"; };
+		3AB39C34D96E45E08E2FD13D /* VorbisDependencies.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = VorbisDependencies.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src/VorbisDependencies.c; sourceTree = "<absolute>"; };
+		3BEB4F5FF63F44D686DFD1B2 /* Encoders.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Encoders.cpp; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src/Encoders.cpp; sourceTree = "<absolute>"; };
+		3C8D4AE95FB144549265A166 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = sourcecode.text.plist; fileEncoding = 4; lastKnownFileType = text.plist; name = Info.plist; path = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/libnyquist_build/CMakeFiles/libnyquist.dir/Info.plist"; sourceTree = "<absolute>"; };
+		4A32C5F178844B0F9C4F8E31 /* pack_dns.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = pack_dns.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/pack_dns.c; sourceTree = "<absolute>"; };
+		4D7F7A4109F841D5B6ACAF05 /* Common.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = Common.h; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include/libnyquist/Common.h; sourceTree = "<absolute>"; };
+		50C4907E935F4FD7ACBF5323 /* WavDecoder.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = WavDecoder.cpp; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src/WavDecoder.cpp; sourceTree = "<absolute>"; };
+		56CE48B919AF46448E9B7FF8 /* unpack_dsd.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = unpack_dsd.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/unpack_dsd.c; sourceTree = "<absolute>"; };
+		5A16B0480AFD49F3938AB2D5 /* extra2.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = extra2.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/extra2.c; sourceTree = "<absolute>"; };
+		6133D950764F46F894EEC40C /* model_inference.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = model_inference.cpp; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/src/model_inference.cpp; sourceTree = "<absolute>"; };
+		61E187B2C6C74796BE410AEF /* extra1.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = extra1.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/extra1.c; sourceTree = "<absolute>"; };
+		67E7E2B4DFDE45D08065628C /* CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/CMakeLists.txt; sourceTree = "<absolute>"; };
+		6836D534DCC649B39500DBE2 /* pack_dsd.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = pack_dsd.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/pack_dsd.c; sourceTree = "<absolute>"; };
+		709092DB888C42CA8E962C0D /* unpack_floats.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = unpack_floats.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/unpack_floats.c; sourceTree = "<absolute>"; };
+		73027EB169F247F7B65911CB /* open_raw.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = open_raw.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/open_raw.c; sourceTree = "<absolute>"; };
+		7BA725960C52481583354418 /* MusepackDependencies.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = MusepackDependencies.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src/MusepackDependencies.c; sourceTree = "<absolute>"; };
+		81F8300720F841AE987EC51F /* FlacDecoder.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = FlacDecoder.cpp; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src/FlacDecoder.cpp; sourceTree = "<absolute>"; };
+		8212A9C5D37B47A58148229D /* CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		840FA3BF8EDA4B1096750769 /* decorr_utils.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = decorr_utils.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/decorr_utils.c; sourceTree = "<absolute>"; };
+		856C669DB7604539BFD649BA /* dsp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = dsp.cpp; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/src/dsp.cpp; sourceTree = "<absolute>"; };
+		89E7530FD6A04B528AFF07CE /* unpack_utils.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = unpack_utils.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/unpack_utils.c; sourceTree = "<absolute>"; };
+		92879B75274145D4955904BA /* tags.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = tags.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/tags.c; sourceTree = "<absolute>"; };
+		A368CDC3CA70415AA10C8B0D /* VorbisDecoder.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = VorbisDecoder.cpp; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src/VorbisDecoder.cpp; sourceTree = "<absolute>"; };
+		A75C5B35ABBF4FAD94621AD0 /* read_words.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = read_words.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/read_words.c; sourceTree = "<absolute>"; };
+		AA0685052D9B1F4100249B7C /* DemucsProcessor.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DemucsProcessor.mm; sourceTree = "<group>"; };
+		AA0685072D9B1FBF00249B7C /* demucs_interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = demucs_interface.h; path = ../include/ios/demucs_interface.h; sourceTree = SOURCE_ROOT; };
+		AA0685082D9B1FBF00249B7C /* DemucsProcessor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DemucsProcessor.h; path = ../include/ios/DemucsProcessor.h; sourceTree = SOURCE_ROOT; };
+		AA0685092D9B215C00249B7C /* DemucsFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DemucsFramework.h; path = ../include/ios/DemucsFramework.h; sourceTree = SOURCE_ROOT; };
+		AA06850C2D9B418E00249B7C /* demucs_result_codes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = demucs_result_codes.h; path = ../src/demucs_result_codes.h; sourceTree = SOURCE_ROOT; };
+		AA4710C12D988A9300CD58B2 /* wav_writer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = wav_writer.hpp; sourceTree = "<group>"; };
+		AA4710C22D988A9300CD58B2 /* wav_writer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = wav_writer.cpp; sourceTree = "<group>"; };
+		AA64A9C46DB34CD3B25BCF88 /* tag_utils.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = tag_utils.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/tag_utils.c; sourceTree = "<absolute>"; };
+		AAAAA79C2DB827C200429ADC /* wav_reader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = wav_reader.hpp; sourceTree = "<group>"; };
+		AAAAA79D2DB827C200429ADC /* wav_reader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = wav_reader.cpp; sourceTree = "<group>"; };
+		AAB873882DA71ADC00108E35 /* dr_wav.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dr_wav.h; sourceTree = "<group>"; };
+		B6E4868488EE48AB975EF414 /* Common.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Common.cpp; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src/Common.cpp; sourceTree = "<absolute>"; };
+		BADBE9F98F9442538B186B81 /* entropy_utils.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = entropy_utils.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/entropy_utils.c; sourceTree = "<absolute>"; };
+		C97CCDB436384D12BD11DF54 /* WavPackDecoder.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = WavPackDecoder.cpp; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src/WavPackDecoder.cpp; sourceTree = "<absolute>"; };
+		CCD1A5D6BFCF4AD8AEB91663 /* open_utils.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = open_utils.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/open_utils.c; sourceTree = "<absolute>"; };
+		CDE2F73D3A584920ABBBC16A /* Decoders.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = Decoders.h; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include/libnyquist/Decoders.h; sourceTree = "<absolute>"; };
+		CE55337153484FE1B15C8A5B /* open_filename.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = open_filename.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/open_filename.c; sourceTree = "<absolute>"; };
+		D0BD7C83F20643AE8A0D2D83 /* unpack_seek.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = unpack_seek.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/unpack_seek.c; sourceTree = "<absolute>"; };
+		D1EB9ED803E4402795EFBC61 /* OpusDecoder.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = OpusDecoder.cpp; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src/OpusDecoder.cpp; sourceTree = "<absolute>"; };
+		D3F869C83847427DAF1A3E6C /* open_legacy.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = open_legacy.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/open_legacy.c; sourceTree = "<absolute>"; };
+		D7703C027D5E4507813D3A19 /* pack.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = pack.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/pack.c; sourceTree = "<absolute>"; };
+		DA7D568B8EE8413C96F51856 /* Encoders.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = Encoders.h; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include/libnyquist/Encoders.h; sourceTree = "<absolute>"; };
+		E7047FE381B44DF0BD8F5050 /* demucs.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = demucs.cpp; sourceTree = SOURCE_ROOT; };
+		F17BB3C307834FDEA7562592 /* Mp3Decoder.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Mp3Decoder.cpp; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src/Mp3Decoder.cpp; sourceTree = "<absolute>"; };
+		F24DDB30BC3E4E028F1328AB /* FlacDependencies.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = FlacDependencies.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src/FlacDependencies.c; sourceTree = "<absolute>"; };
+		F28BA884C23A46BDADE03926 /* unpack3.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = unpack3.c; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/src/unpack3.c; sourceTree = "<absolute>"; };
+		FC9B2FEC5E79463CA69531F6 /* MusepackDecoder.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = MusepackDecoder.cpp; path = /Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src/MusepackDecoder.cpp; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BB4A1A0B6D964D409F4274C4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D5D2AFD63663479EA3A7C254 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0D5F56FD5A754ED3AB96B6F8 /* Source Files */ = {
+			isa = PBXGroup;
+			children = (
+				AAAAA79C2DB827C200429ADC /* wav_reader.hpp */,
+				AAAAA79D2DB827C200429ADC /* wav_reader.cpp */,
+				AAB873882DA71ADC00108E35 /* dr_wav.h */,
+				AA06850C2D9B418E00249B7C /* demucs_result_codes.h */,
+				AA0685052D9B1F4100249B7C /* DemucsProcessor.mm */,
+				AA4710C12D988A9300CD58B2 /* wav_writer.hpp */,
+				AA4710C22D988A9300CD58B2 /* wav_writer.cpp */,
+				856C669DB7604539BFD649BA /* dsp.cpp */,
+				373716CE2C764F56A9CD572E /* model_apply.cpp */,
+				6133D950764F46F894EEC40C /* model_inference.cpp */,
+				E7047FE381B44DF0BD8F5050 /* demucs.cpp */,
+			);
+			name = "Source Files";
+			sourceTree = "<group>";
+		};
+		0E95FC7DBF7A4BA2BC8415F8 /* libnyquist */ = {
+			isa = PBXGroup;
+			children = (
+				48BA7C189D6E49ACB7ED2A10 /* Header Files */,
+				F7836FD4777A4E108EF72058 /* src */,
+				F4A8F33F08774C9395065957 /* Source Files */,
+				12B730ECD7AB44ACA9341115 /* Resources */,
+				67E7E2B4DFDE45D08065628C /* CMakeLists.txt */,
+			);
+			name = libnyquist;
+			sourceTree = "<group>";
+		};
+		12B730ECD7AB44ACA9341115 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				3C8D4AE95FB144549265A166 /* Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		1DA54302F74E40FFA9C146A8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1DDB064A919C408FA6B962A9 /* libdemucs.a */,
+				27C385A5366A4C44885E8773 /* liblibnyquist_d.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2581610DC3914B9FAA61E8E2 = {
+			isa = PBXGroup;
+			children = (
+				558FFFC4C92C41DAAC01FA4D /* demucs */,
+				5EC7426B423543808EC1CE00 /* ALL_BUILD */,
+				0E95FC7DBF7A4BA2BC8415F8 /* libnyquist */,
+				1DA54302F74E40FFA9C146A8 /* Products */,
+				B57408D1DEB54DBD800DB13D /* Frameworks */,
+				316D906C925A44EF87B94398 /* Resources */,
+			);
+			sourceTree = "<group>";
+		};
+		316D906C925A44EF87B94398 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		48BA7C189D6E49ACB7ED2A10 /* Header Files */ = {
+			isa = PBXGroup;
+			children = (
+				4D7F7A4109F841D5B6ACAF05 /* Common.h */,
+				CDE2F73D3A584920ABBBC16A /* Decoders.h */,
+				DA7D568B8EE8413C96F51856 /* Encoders.h */,
+			);
+			name = "Header Files";
+			sourceTree = "<group>";
+		};
+		558FFFC4C92C41DAAC01FA4D /* demucs */ = {
+			isa = PBXGroup;
+			children = (
+				AA0685092D9B215C00249B7C /* DemucsFramework.h */,
+				AA0685072D9B1FBF00249B7C /* demucs_interface.h */,
+				AA0685082D9B1FBF00249B7C /* DemucsProcessor.h */,
+				0D5F56FD5A754ED3AB96B6F8 /* Source Files */,
+				C6DF82A6399A4661854533AA /* Resources */,
+				209203BD9A424E05B959BE4B /* CMakeLists.txt */,
+			);
+			name = demucs;
+			sourceTree = "<group>";
+		};
+		5EC7426B423543808EC1CE00 /* ALL_BUILD */ = {
+			isa = PBXGroup;
+			children = (
+				F7ED9B3C1BBF4FCEABE1BE5C /* CMake Rules */,
+				8212A9C5D37B47A58148229D /* CMakeLists.txt */,
+			);
+			name = ALL_BUILD;
+			sourceTree = "<group>";
+		};
+		B57408D1DEB54DBD800DB13D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C6DF82A6399A4661854533AA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1C4CDC947FED48BFA6E5B100 /* Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		F4A8F33F08774C9395065957 /* Source Files */ = {
+			isa = PBXGroup;
+			children = (
+				091DE0F5A2234FB597EE74C5 /* common_utils.c */,
+				840FA3BF8EDA4B1096750769 /* decorr_utils.c */,
+				BADBE9F98F9442538B186B81 /* entropy_utils.c */,
+				61E187B2C6C74796BE410AEF /* extra1.c */,
+				5A16B0480AFD49F3938AB2D5 /* extra2.c */,
+				CE55337153484FE1B15C8A5B /* open_filename.c */,
+				D3F869C83847427DAF1A3E6C /* open_legacy.c */,
+				73027EB169F247F7B65911CB /* open_raw.c */,
+				CCD1A5D6BFCF4AD8AEB91663 /* open_utils.c */,
+				D7703C027D5E4507813D3A19 /* pack.c */,
+				4A32C5F178844B0F9C4F8E31 /* pack_dns.c */,
+				6836D534DCC649B39500DBE2 /* pack_dsd.c */,
+				27734ACA69A44E3B98D93060 /* pack_floats.c */,
+				156B103A7ADD49A887D63C55 /* pack_utils.c */,
+				A75C5B35ABBF4FAD94621AD0 /* read_words.c */,
+				AA64A9C46DB34CD3B25BCF88 /* tag_utils.c */,
+				92879B75274145D4955904BA /* tags.c */,
+				09246C9B5BFD496585FAD589 /* unpack.c */,
+				F28BA884C23A46BDADE03926 /* unpack3.c */,
+				2ED01E65F1284387B0578E8B /* unpack3_open.c */,
+				0A1A0FF653DC486FB7BA83ED /* unpack3_seek.c */,
+				56CE48B919AF46448E9B7FF8 /* unpack_dsd.c */,
+				709092DB888C42CA8E962C0D /* unpack_floats.c */,
+				D0BD7C83F20643AE8A0D2D83 /* unpack_seek.c */,
+				89E7530FD6A04B528AFF07CE /* unpack_utils.c */,
+				2963B3F30B03436C9DA62C07 /* write_words.c */,
+			);
+			name = "Source Files";
+			sourceTree = "<group>";
+		};
+		F7836FD4777A4E108EF72058 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B6E4868488EE48AB975EF414 /* Common.cpp */,
+				3BEB4F5FF63F44D686DFD1B2 /* Encoders.cpp */,
+				81F8300720F841AE987EC51F /* FlacDecoder.cpp */,
+				F24DDB30BC3E4E028F1328AB /* FlacDependencies.c */,
+				F17BB3C307834FDEA7562592 /* Mp3Decoder.cpp */,
+				FC9B2FEC5E79463CA69531F6 /* MusepackDecoder.cpp */,
+				7BA725960C52481583354418 /* MusepackDependencies.c */,
+				D1EB9ED803E4402795EFBC61 /* OpusDecoder.cpp */,
+				07F8A21EEC6945F9B563C8DD /* OpusDependencies.c */,
+				A368CDC3CA70415AA10C8B0D /* VorbisDecoder.cpp */,
+				3AB39C34D96E45E08E2FD13D /* VorbisDependencies.c */,
+				50C4907E935F4FD7ACBF5323 /* WavDecoder.cpp */,
+				C97CCDB436384D12BD11DF54 /* WavPackDecoder.cpp */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		F7ED9B3C1BBF4FCEABE1BE5C /* CMake Rules */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "CMake Rules";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D6CB40D4BA72BB0A921AB17 /* libnyquist */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAD470E7FBD1488196E5E571 /* Build configuration list for PBXNativeTarget "libnyquist" */;
+			buildPhases = (
+				14F6A344F4FE4777B20ED40D /* Sources */,
+				D5D2AFD63663479EA3A7C254 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = libnyquist;
+			productName = libnyquist;
+			productReference = 27C385A5366A4C44885E8773 /* liblibnyquist_d.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		8F919C0B23345F63379D081A /* demucs */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3E0C37909FBA4A2E886325ED /* Build configuration list for PBXNativeTarget "demucs" */;
+			buildPhases = (
+				6B090CE51F0644A1A4C518C3 /* Sources */,
+				BB4A1A0B6D964D409F4274C4 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				926E64D12D324313BF931389 /* PBXTargetDependency */,
+				4A8A6525F9CE4967992CD5A7 /* PBXTargetDependency */,
+			);
+			name = demucs;
+			productName = demucs;
+			productReference = 1DDB064A919C408FA6B962A9 /* libdemucs.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		31238F3D22E24DF18CC0A58A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1620;
+			};
+			buildConfigurationList = DE5CDFCAB5B444F28571C982 /* Build configuration list for PBXProject "demucs.onnx" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2581610DC3914B9FAA61E8E2;
+			projectDirPath = /Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios;
+			projectRoot = "";
+			targets = (
+				05CDBF7DAB4C818E701DD9FB /* ALL_BUILD */,
+				A60B7676A8D2D7E472FE2557 /* RUN_TESTS */,
+				EF9D33433E3B986D09B781B1 /* ZERO_CHECK */,
+				8F919C0B23345F63379D081A /* demucs */,
+				16D18C820EC41E43624D0A6C /* install */,
+				8D6CB40D4BA72BB0A921AB17 /* libnyquist */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		003C8D08B0008F35F218E126 /* CMake PostBuild Rules */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "CMake PostBuild Rules";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nif test \"$CONFIGURATION\" = \"Debug\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  /opt/homebrew/bin/ctest --force-new-ctest-process -C $CONFIGURATION$EFFECTIVE_PLATFORM_NAME\nfi\nif test \"$CONFIGURATION\" = \"Release\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  /opt/homebrew/bin/ctest --force-new-ctest-process -C $CONFIGURATION$EFFECTIVE_PLATFORM_NAME\nfi\nif test \"$CONFIGURATION\" = \"MinSizeRel\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  /opt/homebrew/bin/ctest --force-new-ctest-process -C $CONFIGURATION$EFFECTIVE_PLATFORM_NAME\nfi\nif test \"$CONFIGURATION\" = \"RelWithDebInfo\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  /opt/homebrew/bin/ctest --force-new-ctest-process -C $CONFIGURATION$EFFECTIVE_PLATFORM_NAME\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		44B9E87EE81BBA971DBA338C /* Generate CMakeFiles/ZERO_CHECK */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate CMakeFiles/ZERO_CHECK";
+			outputPaths = (
+				"/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/CMakeFiles/ZERO_CHECK",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nif test \"$CONFIGURATION\" = \"Debug\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  make -f /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/CMakeScripts/ReRunCMake.make\nfi\nif test \"$CONFIGURATION\" = \"Release\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  make -f /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/CMakeScripts/ReRunCMake.make\nfi\nif test \"$CONFIGURATION\" = \"MinSizeRel\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  make -f /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/CMakeScripts/ReRunCMake.make\nfi\nif test \"$CONFIGURATION\" = \"RelWithDebInfo\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  make -f /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/CMakeScripts/ReRunCMake.make\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		621987CFA773FE30413ECF3E /* Generate CMakeFiles/ALL_BUILD */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate CMakeFiles/ALL_BUILD";
+			outputPaths = (
+				"/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/CMakeFiles/ALL_BUILD",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nif test \"$CONFIGURATION\" = \"Debug\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  echo Build\\ all\\ projects\nfi\nif test \"$CONFIGURATION\" = \"Release\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  echo Build\\ all\\ projects\nfi\nif test \"$CONFIGURATION\" = \"MinSizeRel\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  echo Build\\ all\\ projects\nfi\nif test \"$CONFIGURATION\" = \"RelWithDebInfo\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  echo Build\\ all\\ projects\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		93426DA6A4AC2C2AC9CE883C /* CMake PostBuild Rules */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "CMake PostBuild Rules";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nif test \"$CONFIGURATION\" = \"Debug\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  /opt/homebrew/bin/cmake -DBUILD_TYPE=$CONFIGURATION -DEFFECTIVE_PLATFORM_NAME=$EFFECTIVE_PLATFORM_NAME -P cmake_install.cmake\nfi\nif test \"$CONFIGURATION\" = \"Release\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  /opt/homebrew/bin/cmake -DBUILD_TYPE=$CONFIGURATION -DEFFECTIVE_PLATFORM_NAME=$EFFECTIVE_PLATFORM_NAME -P cmake_install.cmake\nfi\nif test \"$CONFIGURATION\" = \"MinSizeRel\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  /opt/homebrew/bin/cmake -DBUILD_TYPE=$CONFIGURATION -DEFFECTIVE_PLATFORM_NAME=$EFFECTIVE_PLATFORM_NAME -P cmake_install.cmake\nfi\nif test \"$CONFIGURATION\" = \"RelWithDebInfo\"; then :\n  cd /Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios\n  /opt/homebrew/bin/cmake -DBUILD_TYPE=$CONFIGURATION -DEFFECTIVE_PLATFORM_NAME=$EFFECTIVE_PLATFORM_NAME -P cmake_install.cmake\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		14F6A344F4FE4777B20ED40D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				953302254ED24EF0A250740F /* Common.cpp in Sources */,
+				F82FB1ACFA4B4A2A9B9D6206 /* Encoders.cpp in Sources */,
+				8F4FC6A1EF4346DEAFB4EB7D /* FlacDecoder.cpp in Sources */,
+				E7AC0FFDE0CD404D8BDEBE36 /* FlacDependencies.c in Sources */,
+				65C7E3A482724C6C87AB9F6F /* Mp3Decoder.cpp in Sources */,
+				FC8800A57F5948F99C1D771E /* MusepackDecoder.cpp in Sources */,
+				864EB661A81E41BAB68E4AE8 /* MusepackDependencies.c in Sources */,
+				540A8443EECB4F6B8366F866 /* OpusDecoder.cpp in Sources */,
+				2931F7B11A6B4BB9A0BE2482 /* OpusDependencies.c in Sources */,
+				FB95AA5E4A68494AA8F907B2 /* VorbisDecoder.cpp in Sources */,
+				D2763C110EE647038EC6F3F3 /* VorbisDependencies.c in Sources */,
+				689F117F3CE24718A0148E9D /* WavDecoder.cpp in Sources */,
+				A714006554F54B29A487B959 /* WavPackDecoder.cpp in Sources */,
+				FE2BAA1A001A46ECA66F8BE9 /* common_utils.c in Sources */,
+				482CCD2AED89416EA0FF65CD /* decorr_utils.c in Sources */,
+				B69458AF5A034DE68039DAD4 /* entropy_utils.c in Sources */,
+				060BED81666F4A4599003D9A /* extra1.c in Sources */,
+				42DEFFF60C864213A7B7FD3E /* extra2.c in Sources */,
+				C3AFCEC838C34ADC91D635DB /* open_filename.c in Sources */,
+				73541C7D750B47D2BB8E4644 /* open_legacy.c in Sources */,
+				F265734F07F046889B8DF0BA /* open_raw.c in Sources */,
+				16C89612486C447292F2FE35 /* open_utils.c in Sources */,
+				4BA35A1942664D05A85D249C /* pack.c in Sources */,
+				2AE953CAC1A44000A4FE61B1 /* pack_dns.c in Sources */,
+				63BA6B7BEF924DE9BA5F970B /* pack_dsd.c in Sources */,
+				B8F3697E550E453DB5C0474A /* pack_floats.c in Sources */,
+				66CDF4F230AD41539FC45E39 /* pack_utils.c in Sources */,
+				1E7F3D20F55042C1B4D0D5C2 /* read_words.c in Sources */,
+				12A0E7B1D96246419DA8793E /* tag_utils.c in Sources */,
+				0E3CE5ECB8CA4236A40F6B5B /* tags.c in Sources */,
+				3C464E478DFF42678CDCBD37 /* unpack.c in Sources */,
+				692624225FFB42A0897577E1 /* unpack3.c in Sources */,
+				EE56136A1FCA46DCBCAF7F89 /* unpack3_open.c in Sources */,
+				9088F937EE7249FD9C65C0CD /* unpack3_seek.c in Sources */,
+				15E73966A32344B8A35FE263 /* unpack_dsd.c in Sources */,
+				D51DCEA53266400C8B481764 /* unpack_floats.c in Sources */,
+				210242821C9947A8B4E8421E /* unpack_seek.c in Sources */,
+				08B0E3059B3149A99EB8E330 /* unpack_utils.c in Sources */,
+				8D91FA1768BD4F95AD677FF7 /* write_words.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6B090CE51F0644A1A4C518C3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAAAA79E2DB827C200429ADC /* wav_reader.cpp in Sources */,
+				7E15EA2B610C42ACADAA1053 /* dsp.cpp in Sources */,
+				AA0685062D9B1F5500249B7C /* DemucsProcessor.mm in Sources */,
+				AA4710C32D988A9300CD58B2 /* wav_writer.cpp in Sources */,
+				F5E2C161F5F942F9B71B8042 /* model_apply.cpp in Sources */,
+				FDD05D32D8CA49EDB832DDB9 /* model_inference.cpp in Sources */,
+				3444FEE026264B27AE91B434 /* demucs.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4A8A6525F9CE4967992CD5A7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EF9D33433E3B986D09B781B1 /* ZERO_CHECK */;
+			targetProxy = CD55C8DF4425420B92E9D1C0 /* PBXContainerItemProxy */;
+		};
+		6EBEE5A9C5A34C5F90B60879 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D6CB40D4BA72BB0A921AB17 /* libnyquist */;
+			targetProxy = 723A49319674450294D0F535 /* PBXContainerItemProxy */;
+		};
+		926E64D12D324313BF931389 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D6CB40D4BA72BB0A921AB17 /* libnyquist */;
+			targetProxy = 0FCFAE71BFB943CBB698B8B3 /* PBXContainerItemProxy */;
+		};
+		A9E7633B37BF436BB5D61E44 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8F919C0B23345F63379D081A /* demucs */;
+			targetProxy = F0E6BAC6951F47E0B7862F87 /* PBXContainerItemProxy */;
+		};
+		B0CAD14288C341E1B4608F00 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EF9D33433E3B986D09B781B1 /* ZERO_CHECK */;
+			targetProxy = B95D23CD57C3436CB530D50D /* PBXContainerItemProxy */;
+		};
+		D7E8EDE221044DBA8C7D2A7A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 05CDBF7DAB4C818E701DD9FB /* ALL_BUILD */;
+			targetProxy = 7B5C187AB19844FEBBBFA2CC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0537E903AE06410BB594919F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Debug;
+		};
+		068498D10ED64FB9AF25AF58 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = RUN_TESTS;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Release;
+		};
+		0870DB6DB1554B86A87276D7 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = install;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = MinSizeRel;
+		};
+		148999FF981046A9880EAAF6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Release;
+		};
+		1677CCA00CD348459CC4189B /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/libnyquist_build/lib/RelWithDebInfo";
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include/libnyquist,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/FLAC/src/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/libogg/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/libvorbis/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/libvorbis/src,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/musepack/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/celt,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/libopus/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/opusfile/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/opusfile/src/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/silk,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/silk/float,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src,
+					"$(inherited)",
+				);
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				OTHER_CFLAGS = (
+					"-DNDEBUG",
+					"-fPIC",
+					"$(inherited)",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-DNDEBUG",
+					"'-std=gnu++20'",
+					"-fPIC",
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = libnyquist;
+				SECTORDER_FLAGS = "";
+				TARGET_TEMP_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/build/libnyquist.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = RelWithDebInfo;
+		};
+		1BA4B25B97A24A34ABB3FFAA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/Debug${EFFECTIVE_PLATFORM_NAME}";
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../vendor/onnxruntime/include,
+					"/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../onnx-models/model",
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../src,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../vendor/eigen,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../vendor/libnyquist/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include,
+					"$(inherited)",
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/include/ios,
+				);
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-DEIGEN_INTERNAL_DEBUGGING",
+					"'-std=gnu++20'",
+					"-fPIC",
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = demucs;
+				SECTORDER_FLAGS = "";
+				TARGET_TEMP_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/build/demucs.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Debug;
+		};
+		2F4EB13E2ED645EB917A82CB /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = MinSizeRel;
+		};
+		37C758D9764C41F1B311AD46 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = RUN_TESTS;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Debug;
+		};
+		37F65CD7CBE14B0FBB6DA89B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Release;
+		};
+		3945BC0EB75245E19EDF902A /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = RUN_TESTS;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = RelWithDebInfo;
+		};
+		465C1B7E9B04413F93729DE6 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SYMROOT = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/build";
+			};
+			name = RelWithDebInfo;
+		};
+		46F35AED35B940EF85BFD690 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = RelWithDebInfo;
+		};
+		5AD967536B944E71BF8071C6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SYMROOT = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/build";
+			};
+			name = Release;
+		};
+		5CDB09AEE3174C88A4311CB5 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/RelWithDebInfo${EFFECTIVE_PLATFORM_NAME}";
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../vendor/onnxruntime/include,
+					"/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../onnx-models/model",
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../src,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../vendor/eigen,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../vendor/libnyquist/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include,
+					"$(inherited)",
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/include/ios,
+				);
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-DNDEBUG",
+					"'-std=gnu++20'",
+					"-fPIC",
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = demucs;
+				SECTORDER_FLAGS = "";
+				TARGET_TEMP_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/build/demucs.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = RelWithDebInfo;
+		};
+		61DD2EF0EE944C408CBA29C1 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = MinSizeRel;
+		};
+		662414F6E5D24124B5122F82 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = install;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Release;
+		};
+		693BAC2AB1E0468FA36DB4DB /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SYMROOT = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/build";
+			};
+			name = MinSizeRel;
+		};
+		6F3B51E4ADB54FE69326ED94 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = install;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = RelWithDebInfo;
+		};
+		995430F518764D94A72B459F /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = RelWithDebInfo;
+		};
+		9F1BBA65E46D4917A60D125B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SYMROOT = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/build";
+			};
+			name = Debug;
+		};
+		A658FCD1D02A4E97A77A0B88 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = install;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Debug;
+		};
+		ADE3038E3799478EB88057EC /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/MinSizeRel${EFFECTIVE_PLATFORM_NAME}";
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../vendor/onnxruntime/include,
+					"/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../onnx-models/model",
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../src,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../vendor/eigen,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../vendor/libnyquist/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include,
+					"$(inherited)",
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/include/ios,
+				);
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-DNDEBUG",
+					"'-std=gnu++20'",
+					"-fPIC",
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = demucs;
+				SECTORDER_FLAGS = "";
+				TARGET_TEMP_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/build/demucs.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = MinSizeRel;
+		};
+		CC0F014A77004861BACD407E /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = RUN_TESTS;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = MinSizeRel;
+		};
+		CC59FD7D1DCE46C6A4A88500 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Debug;
+		};
+		DCEB954C5FEA46969C9C837D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/libnyquist_build/lib/Release";
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include/libnyquist,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/FLAC/src/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/libogg/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/libvorbis/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/libvorbis/src,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/musepack/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/celt,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/libopus/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/opusfile/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/opusfile/src/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/silk,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/silk/float,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src,
+					"$(inherited)",
+				);
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				OTHER_CFLAGS = (
+					"-DNDEBUG",
+					"-fPIC",
+					"$(inherited)",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-march=native",
+					"-ffast-math",
+					"-flto",
+					"-fno-signed-zeros",
+					"-fassociative-math",
+					"-freciprocal-math",
+					"-fno-math-errno",
+					"-fno-rounding-math",
+					"-funsafe-math-optimizations",
+					"-fno-trapping-math",
+					"-fno-rtti",
+					"-DNDEBUG",
+					"'-std=gnu++20'",
+					"-fPIC",
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = libnyquist;
+				SECTORDER_FLAGS = "";
+				TARGET_TEMP_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/build/libnyquist.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Release;
+		};
+		E24BDFA68FFC433C86554E19 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/libnyquist_build/lib/MinSizeRel";
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include/libnyquist,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/FLAC/src/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/libogg/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/libvorbis/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/libvorbis/src,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/musepack/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/celt,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/libopus/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/opusfile/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/opusfile/src/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/silk,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/silk/float,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src,
+					"$(inherited)",
+				);
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				OTHER_CFLAGS = (
+					"-DNDEBUG",
+					"-fPIC",
+					"$(inherited)",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-DNDEBUG",
+					"'-std=gnu++20'",
+					"-fPIC",
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = libnyquist;
+				SECTORDER_FLAGS = "";
+				TARGET_TEMP_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/build/libnyquist.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = MinSizeRel;
+		};
+		E69D5D8C6E324A4DB49D96EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/Release${EFFECTIVE_PLATFORM_NAME}";
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../vendor/onnxruntime/include,
+					"/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../onnx-models/model",
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../src,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../vendor/eigen,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/src_ios/../vendor/libnyquist/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include,
+					"$(inherited)",
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/include/ios,
+				);
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-march=native",
+					"-ffast-math",
+					"-flto",
+					"-fno-signed-zeros",
+					"-fassociative-math",
+					"-freciprocal-math",
+					"-fno-math-errno",
+					"-fno-rounding-math",
+					"-funsafe-math-optimizations",
+					"-fno-trapping-math",
+					"-fno-rtti",
+					"-DNDEBUG",
+					"'-std=gnu++20'",
+					"-fPIC",
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = demucs;
+				SECTORDER_FLAGS = "";
+				TARGET_TEMP_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/build/demucs.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Release;
+		};
+		F4CF820142954B96A9C6DD20 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/libnyquist_build/lib/Debug";
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/include/libnyquist,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/FLAC/src/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/libogg/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/libvorbis/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/libvorbis/src,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/musepack/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/celt,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/libopus/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/opusfile/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/opusfile/src/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/silk,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/opus/silk/float,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/third_party/wavpack/include,
+					/Users/steve/Developer/XcodeProjects/demucs.onnx/vendor/libnyquist/src,
+					"$(inherited)",
+				);
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				OTHER_CFLAGS = (
+					"-fPIC",
+					"$(inherited)",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-DEIGEN_INTERNAL_DEBUGGING",
+					"'-std=gnu++20'",
+					"-fPIC",
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = libnyquist_d;
+				SECTORDER_FLAGS = "";
+				TARGET_TEMP_DIR = "/Users/steve/Developer/XcodeProjects/demucs.onnx/build/build-ios/build/libnyquist.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3E0C37909FBA4A2E886325ED /* Build configuration list for PBXNativeTarget "demucs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1BA4B25B97A24A34ABB3FFAA /* Debug */,
+				E69D5D8C6E324A4DB49D96EE /* Release */,
+				ADE3038E3799478EB88057EC /* MinSizeRel */,
+				5CDB09AEE3174C88A4311CB5 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		51C40F084901421E9930D26F /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0537E903AE06410BB594919F /* Debug */,
+				37F65CD7CBE14B0FBB6DA89B /* Release */,
+				61DD2EF0EE944C408CBA29C1 /* MinSizeRel */,
+				995430F518764D94A72B459F /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		65C45E7E10FF4E68A7ADAEF4 /* Build configuration list for PBXAggregateTarget "install" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A658FCD1D02A4E97A77A0B88 /* Debug */,
+				662414F6E5D24124B5122F82 /* Release */,
+				0870DB6DB1554B86A87276D7 /* MinSizeRel */,
+				6F3B51E4ADB54FE69326ED94 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CAD470E7FBD1488196E5E571 /* Build configuration list for PBXNativeTarget "libnyquist" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F4CF820142954B96A9C6DD20 /* Debug */,
+				DCEB954C5FEA46969C9C837D /* Release */,
+				E24BDFA68FFC433C86554E19 /* MinSizeRel */,
+				1677CCA00CD348459CC4189B /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DE5CDFCAB5B444F28571C982 /* Build configuration list for PBXProject "demucs.onnx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9F1BBA65E46D4917A60D125B /* Debug */,
+				5AD967536B944E71BF8071C6 /* Release */,
+				693BAC2AB1E0468FA36DB4DB /* MinSizeRel */,
+				465C1B7E9B04413F93729DE6 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E6056F24D7C14D76823468C2 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC59FD7D1DCE46C6A4A88500 /* Debug */,
+				148999FF981046A9880EAAF6 /* Release */,
+				2F4EB13E2ED645EB917A82CB /* MinSizeRel */,
+				46F35AED35B940EF85BFD690 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EED53D21CFCD4EC78B30BD6C /* Build configuration list for PBXAggregateTarget "RUN_TESTS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				37C758D9764C41F1B311AD46 /* Debug */,
+				068498D10ED64FB9AF25AF58 /* Release */,
+				CC0F014A77004861BACD407E /* MinSizeRel */,
+				3945BC0EB75245E19EDF902A /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 31238F3D22E24DF18CC0A58A /* Project object */;
+}
